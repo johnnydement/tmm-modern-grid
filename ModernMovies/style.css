@@ -1,0 +1,579 @@
+/* ==========================================================================
+   Modern Dark Grid — plantilla d'exportació per a tinyMediaManager
+   Un sol full d'estils compartit entre la plantilla de Pel·lícules i la de
+   Sèries. Es copia literalment a cada carpeta de plantilla.
+   ========================================================================== */
+
+:root {
+  --bg: #0b0b0e;
+  --bg-elev: #131318;
+  --card: #1b1b22;
+  --card-hover: #232330;
+  --text: #ececed;
+  --text-dim: #9b9ba6;
+  --text-faint: #6b6b76;
+  --accent: #f5a623;
+  --accent-dim: #7a5518;
+  --ok: #35c98f;
+  --warn: #e94560;
+  --radius: 12px;
+  --radius-sm: 7px;
+  --gap: 1.1rem;
+  --maxw: 1600px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--accent); }
+
+img { max-width: 100%; display: block; }
+
+::selection { background: var(--accent); color: #1a1200; }
+
+/* focus visibility, accessible by keyboard */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* -------------------------------------------------------------------------
+   Capçalera / barra de cerca i filtres
+   ------------------------------------------------------------------------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: linear-gradient(180deg, rgba(11,11,14,.98) 0%, rgba(11,11,14,.94) 70%, rgba(11,11,14,0) 100%);
+  backdrop-filter: blur(6px);
+  padding: 1.1rem 1.5rem .6rem;
+}
+
+.topbar-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .9rem;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: .6rem;
+  margin-right: auto;
+  white-space: nowrap;
+}
+
+.brand h1 {
+  font-size: 1.35rem;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+
+.brand .count {
+  color: var(--text-dim);
+  font-size: .85rem;
+}
+
+.crosslink {
+  color: var(--text-dim);
+  font-size: .85rem;
+  border: 1px solid #2a2a34;
+  border-radius: 999px;
+  padding: .3rem .8rem;
+}
+.crosslink:hover { border-color: var(--accent); color: var(--accent); }
+
+.search-wrap {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 180px;
+  max-width: 380px;
+}
+
+.search-wrap svg {
+  position: absolute;
+  left: .7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  fill: var(--text-faint);
+  pointer-events: none;
+}
+
+#search {
+  width: 100%;
+  padding: .55rem .8rem .55rem 2.1rem;
+  border-radius: 999px;
+  border: 1px solid #2a2a34;
+  background: var(--bg-elev);
+  color: var(--text);
+  font-size: .92rem;
+}
+#search::placeholder { color: var(--text-faint); }
+#search:focus { border-color: var(--accent); }
+
+.filter-toggle {
+  border: 1px solid #2a2a34;
+  background: var(--bg-elev);
+  color: var(--text);
+  border-radius: 999px;
+  padding: .5rem 1rem;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.filter-toggle.active, .filter-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.lang-switcher {
+  display: flex;
+  border: 1px solid #2a2a34;
+  border-radius: 999px;
+  overflow: hidden;
+  flex: none;
+}
+.lang-switcher button {
+  border: 0;
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  padding: .45rem .65rem;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+  cursor: pointer;
+  border-right: 1px solid #2a2a34;
+}
+.lang-switcher button:last-child { border-right: 0; }
+.lang-switcher button.active { background: var(--accent-dim); color: var(--accent); }
+.lang-switcher button:hover { color: var(--accent); }
+
+.filters {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: none;
+  flex-wrap: wrap;
+  gap: .9rem 1.4rem;
+  padding: .9rem 0 .3rem;
+  align-items: flex-end;
+}
+.filters.open { display: flex; }
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  font-size: .78rem;
+  color: var(--text-dim);
+}
+
+.filter-group select,
+.filter-group input[type="range"] {
+  background: var(--bg-elev);
+  color: var(--text);
+  border: 1px solid #2a2a34;
+  border-radius: var(--radius-sm);
+  padding: .4rem .55rem;
+  font-size: .85rem;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  max-width: 420px;
+}
+
+.chip {
+  border: 1px solid #2a2a34;
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  border-radius: 999px;
+  padding: .3rem .75rem;
+  font-size: .78rem;
+  cursor: pointer;
+  user-select: none;
+}
+.chip.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+/* Gènere vetat (segon clic): vermell i ratllat */
+.chip.excluded { background: rgba(233,69,96,.15); border-color: var(--warn); color: var(--warn); text-decoration: line-through; }
+
+/* Selector I / O dels gèneres */
+.genre-mode { display: inline-flex; align-self: flex-start; border: 1px solid #2a2a34; border-radius: 999px; overflow: hidden; }
+.genre-mode button {
+  border: 0; background: var(--bg-elev); color: var(--text-dim);
+  font-size: .72rem; font-weight: 700; padding: .2rem .8rem; cursor: pointer;
+}
+.genre-mode button.active { background: var(--accent); color: #1a1205; }
+.filter-hint { color: var(--text-faint); font-size: .7rem; max-width: 420px; }
+
+.az-bar {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  padding: 0 0 .7rem;
+}
+
+.az-btn {
+  border: 1px solid #2a2a34;
+  background: var(--bg-elev);
+  color: var(--text-dim);
+  border-radius: var(--radius-sm);
+  min-width: 1.9rem;
+  height: 1.9rem;
+  line-height: 1.8rem;
+  padding: 0 .35rem;
+  text-align: center;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.az-btn:hover { border-color: var(--accent); color: var(--accent); }
+.az-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.clear-filters {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: var(--warn);
+  font-size: .8rem;
+  cursor: pointer;
+  padding: .4rem 0;
+}
+
+/* -------------------------------------------------------------------------
+   Graella de targetes
+   ------------------------------------------------------------------------- */
+
+.grid {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 1.4rem 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: var(--gap);
+}
+
+.empty-state {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-dim);
+  display: none;
+}
+.empty-state.show { display: block; }
+
+/* Pastilla "filtrant per Actor/Director/Estudi: X" (apareix només quan
+   s'arriba des d'un enllaç de la fitxa de detall; no hi ha cap control
+   visible per triar-ho, per això cal indicar-ho i poder-ho treure). */
+.active-filter-pill {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 1.5rem .9rem;
+  display: flex;
+}
+.active-filter-pill[hidden] { display: none; }
+.active-filter-pill-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: .35rem .5rem .35rem .9rem;
+  font-size: .82rem;
+  font-weight: 600;
+}
+.active-filter-pill-inner button {
+  border: 0;
+  background: rgba(0,0,0,.25);
+  color: inherit;
+  border-radius: 999px;
+  width: 1.3rem;
+  height: 1.3rem;
+  line-height: 1.3rem;
+  text-align: center;
+  padding: 0;
+  cursor: pointer;
+  font-size: .9rem;
+}
+.active-filter-pill-inner button:hover { background: rgba(0,0,0,.4); }
+
+.card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card:hover, .card:focus-within { transform: translateY(-4px); background: var(--card-hover); }
+.card:hover a { color: var(--text); }
+
+.card .poster-link { display: block; position: relative; aspect-ratio: 2 / 3; background: var(--bg-elev); }
+.card .poster-link img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Pila d'imatges: només es veu la primera (fem servir la portada de la
+   primera pel·lícula d'una col·lecció com a miniatura representativa). */
+.poster-stack { position: absolute; inset: 0; }
+.poster-stack img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.poster-stack img:not(:first-child) { display: none; }
+
+.badge {
+  position: absolute;
+  font-size: .68rem;
+  font-weight: 700;
+  padding: .15rem .45rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: .02em;
+  z-index: 2;
+}
+.badge.quality { bottom: .5rem; left: .5rem; background: rgba(0,0,0,.7); color: var(--text); white-space: nowrap; }
+.badge.versions { top: .5rem; left: .5rem; background: var(--accent); color: #1a1205; }
+
+/* Banderes d'idioma (cercles) */
+.lang-flags { display: inline-flex; gap: .25rem; align-items: center; }
+.poster-link > .lang-flags { position: absolute; top: .5rem; right: .5rem; z-index: 2; }
+.lang-flag {
+  width: 1.35rem; height: 1.35rem; border-radius: 50%; overflow: hidden;
+  border: 1px solid rgba(255,255,255,.55); box-shadow: 0 1px 4px rgba(0,0,0,.6);
+  background: #2a2a34; display: inline-flex; align-items: center; justify-content: center;
+  font-size: .5rem; font-weight: 800; color: var(--text); cursor: default; flex: none;
+}
+.lang-flag svg { width: 100%; height: 100%; display: block; }
+.lang-flag-more { background: rgba(0,0,0,.75); font-size: .8rem; line-height: 1; }
+.tech-table .lang-flag { width: 1.5rem; height: 1.5rem; }
+.chip:disabled { opacity: .45; cursor: not-allowed; }
+.video-fmt { display: block; }
+.badge.lang { bottom: .5rem; right: .5rem; background: rgba(0,0,0,.7); color: var(--text-dim); max-width: 62%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+
+.card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.88) 100%);
+  opacity: 0;
+  transition: opacity .18s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: .6rem;
+}
+.card:hover .overlay, .card:focus-within .overlay { opacity: 1; }
+.card .overlay p {
+  margin: 0;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card .meta {
+  padding: .55rem .65rem .7rem;
+}
+.card .meta .title {
+  font-size: .88rem;
+  font-weight: 600;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card .meta .sub { font-size: .76rem; color: var(--text-dim); }
+
+/* -------------------------------------------------------------------------
+   Pàgina de detall
+   ------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  min-height: 40vh;
+  background-size: cover;
+  background-position: center 20%;
+  display: flex;
+  align-items: flex-end;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11,11,14,.25) 0%, rgba(11,11,14,.55) 55%, var(--bg) 100%);
+}
+
+.back-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 5;
+  background: rgba(0,0,0,.55);
+  border-radius: 999px;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back-btn svg { width: 1.1rem; height: 1.1rem; fill: var(--text); }
+
+.hero .lang-switcher {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 5;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  gap: 1.6rem;
+  padding: 2rem 1.5rem;
+  align-items: flex-end;
+}
+
+.hero-poster {
+  width: 160px;
+  flex: none;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.hero-info h1 { margin: 0 0 .3rem; font-size: 1.9rem; }
+.hero-info .tagline { color: var(--text-dim); font-style: italic; margin: 0 0 .6rem; }
+
+.badge-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .7rem; }
+.badge-row .pill {
+  background: var(--bg-elev);
+  border: 1px solid #2a2a34;
+  border-radius: 999px;
+  padding: .2rem .7rem;
+  font-size: .78rem;
+  color: var(--text-dim);
+}
+
+.genre-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .3rem; }
+.genre-row a.chip { font-size: .74rem; }
+
+.detail-body {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+  gap: 2rem;
+}
+
+.plot { max-width: 62ch; color: var(--text); }
+.plot h2, .section-title { font-size: 1rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-dim); margin: 1.6rem 0 .6rem; }
+
+.cast-row { display: flex; flex-wrap: wrap; gap: .5rem .8rem; }
+.cast-row .actor { font-size: .82rem; }
+.cast-row .actor .role { color: var(--text-faint); }
+
+/* Enllaços a actors/directors/estudi (filtren el listat en clicar-los) */
+.person-link { border-bottom: 1px dotted var(--text-faint); }
+.person-link:hover { border-bottom-color: var(--accent); }
+
+.tech-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.tech-table td { padding: .35rem 0; border-bottom: 1px solid #23232c; }
+.tech-table td:first-child { color: var(--text-dim); width: 40%; }
+
+.side { align-self: start; background: var(--bg-elev); border-radius: var(--radius); padding: 1rem 1.1rem; }
+
+.season-block { margin-bottom: 1.4rem; }
+.season-title {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  cursor: pointer;
+  font-weight: 700;
+  padding: .6rem .2rem;
+  border-bottom: 1px solid #23232c;
+}
+.season-title .arrow { transition: transform .15s ease; color: var(--text-dim); }
+.season-block.collapsed .arrow { transform: rotate(-90deg); }
+.season-block.collapsed .episode-list { display: none; }
+
+.episode {
+  display: flex;
+  gap: .9rem;
+  padding: .7rem .2rem;
+  border-bottom: 1px solid #1c1c24;
+}
+.episode .ep-thumb { width: 130px; flex: none; border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 16/9; background: var(--bg); }
+.episode .ep-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.episode .ep-title { font-weight: 600; font-size: .9rem; margin: 0 0 .2rem; }
+.episode .ep-title .num { color: var(--text-dim); font-weight: 400; margin-right: .4rem; }
+.episode .ep-plot { color: var(--text-dim); font-size: .8rem; margin: 0; }
+.episode .ep-watched { color: var(--ok); font-size: .74rem; font-weight: 700; }
+
+footer.site-footer {
+  text-align: center;
+  color: var(--text-faint);
+  font-size: .75rem;
+  padding: 1.5rem 0 3rem;
+}
+
+@media (max-width: 900px) {
+  .detail-body { grid-template-columns: 1fr; }
+  .hero-inner { flex-direction: column; align-items: flex-start; }
+  .hero-poster { width: 120px; }
+}
+
+@media (max-width: 560px) {
+  .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: .7rem; padding: 1rem; }
+  .episode .ep-thumb { width: 96px; }
+}
+
+/* Versions del mateix títol (fitxa) */
+.versions-box { margin: 1.2rem 0 0; }
+.versions-box[hidden] { display: none; }
+.version-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+.version-item { background: var(--card); border: 1px solid #2a2a34; border-radius: 10px; padding: .6rem .8rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem .9rem; }
+.version-item.current { border-color: var(--accent-dim); background: var(--card-hover); }
+.version-main { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; }
+.version-main a { color: var(--text); font-weight: 600; }
+.version-main a:hover { color: var(--accent); }
+.version-main .pill { font-size: .72rem; }
+.version-main .pill.pill-current { background: var(--accent); border-color: var(--accent); color: #1a1205; }
+.version-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; color: var(--text-dim); font-size: .82rem; }
+.version-main .pill { background: var(--bg-elev); border: 1px solid #2a2a34; border-radius: 999px; padding: .1rem .6rem; color: var(--text-dim); }
+.badge-row .pill.versions-jump { color: var(--accent); border-color: var(--accent-dim); text-decoration: none; }
+.badge.shared-warn { top: .5rem; right: .5rem; background: #b4541a; color: #fff; }
+.versions-warn { margin: .7rem 0 0; font-size: .8rem; color: #e0a070; }
+.select-pair { display: flex; gap: .5rem; }
+.select-pair select { flex: 1; min-width: 0; }
+.lang-chip { display: inline-flex; align-items: center; gap: .35rem; }
+.lang-chip .lang-flag { width: 18px; height: 18px; flex: none; position: static; }
+.lang-chip small { color: var(--text-faint); font-size: .7rem; }
+.lang-chip.active small { color: inherit; }

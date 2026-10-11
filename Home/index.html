@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Catálogo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230b0b0e'/%3E%3Cpolygon points='9,6 19,12 9,18' fill='%23f5a623'/%3E%3C/svg%3E"/>
+<script src="config.js"></script>
+<style>
+:root {
+  --bg: #0b0b0e;
+  --bg-elev: #131318;
+  --card: #1b1b22;
+  --card-hover: #232330;
+  --text: #ececed;
+  --text-dim: #9b9ba6;
+  --text-faint: #6b6b76;
+  --accent: #f5a623;
+  --accent-dim: #7a5518;
+  --radius: 12px;
+  --maxw: 1100px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { color-scheme: dark; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #16161d 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+a { color: inherit; text-decoration: none; }
+
+.lang-switcher {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: .25rem;
+  background: var(--bg-elev);
+  border: 1px solid #2a2a34;
+  border-radius: 999px;
+  padding: .25rem;
+  z-index: 5;
+}
+.lang-switcher button {
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: .72rem;
+  font-weight: 700;
+  padding: .3rem .6rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.lang-switcher button.active { background: var(--accent); color: #1a1205; }
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem 3rem;
+  text-align: center;
+}
+.hero-title {
+  margin: 0 0 .5rem;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+}
+.hero-sub {
+  margin: 0 0 2.6rem;
+  color: var(--text-dim);
+  font-size: 1rem;
+}
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.3rem;
+  max-width: var(--maxw);
+  width: 100%;
+}
+.hub-card {
+  background: var(--card);
+  border: 1px solid #2a2a34;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2.2rem 1.5rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .6rem;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.hub-card:hover, .hub-card:focus-visible {
+  transform: translateY(-5px);
+  background: var(--card-hover);
+  border-color: var(--accent-dim);
+}
+.hub-card .icon { font-size: 2.6rem; line-height: 1; margin-bottom: .3rem; }
+.hub-card .label { font-size: 1.15rem; font-weight: 700; }
+.hub-card .count { color: var(--text-dim); font-size: .85rem; min-height: 1.2em; }
+.hub-card .count.empty { opacity: 0; }
+
+.gsearch { width: 100%; max-width: 560px; margin: 0 0 2rem; }
+.gsearch input {
+  width: 100%;
+  background: var(--bg-elev);
+  border: 1px solid #2a2a34;
+  color: var(--text);
+  border-radius: 999px;
+  padding: .75rem 1.2rem;
+  font-size: 1rem;
+  outline: none;
+}
+.gsearch input:focus { border-color: var(--accent-dim); }
+.gresults { width: 100%; max-width: var(--maxw); text-align: left; margin: 0 0 2.2rem; }
+.gresults[hidden] { display: none; }
+.gres-group { margin-bottom: 1.6rem; }
+.gres-group h2 {
+  font-size: .85rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text-dim); margin: 0 0 .7rem; font-weight: 700;
+}
+.gres-group h2 small { color: var(--text-faint); font-weight: 400; }
+.gres-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: .8rem; }
+.gres-card { display: block; }
+.gres-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; background: var(--card); display: block; }
+.gres-card .t { display: block; font-size: .78rem; margin-top: .35rem; line-height: 1.25; }
+.gres-card .y { display: block; font-size: .7rem; color: var(--text-faint); }
+.gres-card:hover .t { color: var(--accent); }
+.gres-all { display: inline-block; margin-top: .7rem; font-size: .8rem; color: var(--accent); }
+.gres-msg { color: var(--text-dim); font-size: .9rem; }
+.gres-msg a { color: var(--accent); margin-right: 1rem; }
+
+footer {
+  text-align: center;
+  color: var(--text-faint);
+  font-size: .78rem;
+  padding: 1.2rem 1rem 1.6rem;
+}
+
+@media (max-width: 560px) {
+  .hub-grid { grid-template-columns: 1fr; max-width: 360px; }
+}
+</style>
+</head>
+<body>
+
+<div class="lang-switcher" id="langSwitcher">
+	<button type="button" data-lang="ca">CA</button>
+	<button type="button" data-lang="es">ES</button>
+	<button type="button" data-lang="en">EN</button>
+</div>
+
+<main>
+	<h1 class="hero-title" data-i18n="heroTitle">Mi colección</h1>
+	<p class="hero-sub" data-i18n="heroSub">Elige qué quieres explorar</p>
+
+	<div class="gsearch">
+		<input type="search" id="gsearch" placeholder="Buscar en todo el catálogo…" data-i18n-placeholder="searchPlaceholder" autocomplete="off"/>
+	</div>
+	<div class="gresults" id="gresults" hidden></div>
+
+	<div class="hub-grid" id="hubGrid">
+		<a class="hub-card" href="movies/movielist.html" data-route="movies" data-rest="movielist.html">
+			<span class="icon">🎬</span>
+			<span class="label" data-i18n="movies">Películas</span>
+			<span class="count empty" data-count="movies"></span>
+		</a>
+		<a class="hub-card" href="tvshows/tvshows.html" data-route="tvshows" data-rest="tvshows.html">
+			<span class="icon">📺</span>
+			<span class="label" data-i18n="shows">Series</span>
+			<span class="count empty" data-count="tvshows"></span>
+		</a>
+		<a class="hub-card" href="collections/moviesets.html" data-route="collections" data-rest="moviesets.html">
+			<span class="icon">📚</span>
+			<span class="label" data-i18n="collections">Colecciones</span>
+			<span class="count empty" data-count="collections"></span>
+		</a>
+		<a class="hub-card" href="stats.html">
+			<span class="icon">📊</span>
+			<span class="label" data-i18n="stats">Estadísticas</span>
+			<span class="count" data-i18n="statsSub">Un vistazo al catálogo</span>
+		</a>
+	</div>
+</main>
+
+<footer data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+
+<script>
+(function () {
+	"use strict";
+
+	var STRINGS = {
+		ca: {
+			heroTitle: "La meva col·lecció",
+			heroSub: "Tria què vols explorar",
+			movies: "Pel·lícules",
+			shows: "Sèries",
+			collections: "Col·leccions",
+			titlesSuffix: "títols",
+			collectionsSuffix: "col·leccions",
+			stats: "Estadístiques",
+			statsSub: "Un cop d'ull al catàleg",
+			searchPlaceholder: "Cerca a tot el catàleg…",
+			seeAll: "Veure'ls tots",
+			noResults: "Cap resultat per a",
+			needsServer: "La cerca global només funciona quan el web està servit per un servidor (el NAS). Obrint-lo com a fitxer local, cerca dins d'un llistat:",
+			searchIn: "Cercar a",
+			footer: "Generat amb tinyMediaManager · plantilla Modern Grid"
+		},
+		es: {
+			heroTitle: "Mi colección",
+			heroSub: "Elige qué quieres explorar",
+			movies: "Películas",
+			shows: "Series",
+			collections: "Colecciones",
+			titlesSuffix: "títulos",
+			collectionsSuffix: "colecciones",
+			stats: "Estadísticas",
+			statsSub: "Un vistazo al catálogo",
+			searchPlaceholder: "Buscar en todo el catálogo…",
+			seeAll: "Ver todos",
+			noResults: "Ningún resultado para",
+			needsServer: "La búsqueda global solo funciona cuando la web está servida por un servidor (el NAS). Abierta como archivo local, busca dentro de un listado:",
+			searchIn: "Buscar en",
+			footer: "Generado con tinyMediaManager · plantilla Modern Grid"
+		},
+		en: {
+			heroTitle: "My collection",
+			heroSub: "Choose what to explore",
+			movies: "Movies",
+			shows: "TV Shows",
+			collections: "Collections",
+			titlesSuffix: "titles",
+			collectionsSuffix: "collections",
+			stats: "Statistics",
+			statsSub: "A glance at the catalog",
+			searchPlaceholder: "Search the whole catalog…",
+			seeAll: "See all",
+			noResults: "No results for",
+			needsServer: "Global search only works when the site is served by a web server (the NAS). Opened as a local file, search inside a list:",
+			searchIn: "Search in",
+			footer: "Generated with tinyMediaManager · Modern Grid template"
+		}
+	};
+
+	var KEYS = ["movies", "tvshows", "collections"];
+	var DEF_DIR = { movies: "movies", tvshows: "tvshows", collections: "collections" };
+	var LIST_FILE = { movies: "movielist.html", tvshows: "tvshows.html", collections: "moviesets.html" };
+	var LABEL_KEY = { movies: "movies", tvshows: "shows", collections: "collections" };
+
+	// ---- Rutes (config.js a l'arrel; sense ell, els noms per defecte) ----
+	function routeDir(key) {
+		var cfg = (window.TMM_CONFIG && window.TMM_CONFIG.routes) || {};
+		var d = Object.prototype.hasOwnProperty.call(cfg, key) ? cfg[key] : DEF_DIR[key];
+		if (d === null || d === false || d === undefined || d === "") return null;
+		return String(d).replace(/^\.?\/+/, "").replace(/\/+$/, "");
+	}
+	function listPath(key) { return routeDir(key) + "/" + LIST_FILE[key]; }
+	var activeKeys = KEYS.filter(function (k) { return routeDir(k) !== null; });
+
+	Array.prototype.slice.call(document.querySelectorAll("a[data-route]")).forEach(function (a) {
+		var k = a.getAttribute("data-route");
+		if (routeDir(k) === null) { a.style.display = "none"; return; }
+		a.setAttribute("href", listPath(k));
+	});
+
+	var langBtns = document.querySelectorAll("#langSwitcher button");
+	var counters = Array.prototype.slice.call(document.querySelectorAll("[data-count]"));
+	var currentLang = "en";
+	var counts = {}; // clau -> número, s'omple a mesura que arriben els fetch
+
+	function getLang() {
+		try {
+			var saved = localStorage.getItem("tmm_lang");
+			if (saved && STRINGS[saved]) return saved;
+		} catch (e) { /* ignore */ }
+		return "en";
+	}
+
+	function applyLang(lang) {
+		currentLang = STRINGS[lang] ? lang : "en";
+		var dict = STRINGS[currentLang];
+		Array.prototype.slice.call(document.querySelectorAll("[data-i18n]")).forEach(function (el) {
+			var key = el.getAttribute("data-i18n");
+			if (dict[key]) el.textContent = dict[key];
+		});
+		Array.prototype.slice.call(document.querySelectorAll("[data-i18n-placeholder]")).forEach(function (el) {
+			var key = el.getAttribute("data-i18n-placeholder");
+			if (dict[key]) el.setAttribute("placeholder", dict[key]);
+		});
+		langBtns.forEach(function (b) {
+			b.classList.toggle("active", b.dataset.lang === currentLang);
+		});
+		document.documentElement.lang = currentLang;
+		renderCounts();
+		runSearch();
+	}
+
+	function setLang(lang) {
+		try { localStorage.setItem("tmm_lang", lang); } catch (e) { /* ignore */ }
+		applyLang(lang);
+	}
+
+	langBtns.forEach(function (b) {
+		b.addEventListener("click", function () { setLang(b.dataset.lang); });
+	});
+
+	function renderCounts() {
+		var suffix = STRINGS[currentLang].titlesSuffix;
+		counters.forEach(function (el) {
+			var key = el.getAttribute("data-count");
+			var n = counts[key];
+			if (typeof n !== "number") { el.classList.add("empty"); return; }
+			var label = key === "collections" ? STRINGS[currentLang].collectionsSuffix : suffix;
+			el.textContent = n + " " + label;
+			el.classList.remove("empty");
+		});
+	}
+
+	// ---- Índex: llegeix el HTML dels llistats generats per tMM (només amb servidor web) ----
+	function norm(str) {
+		return String(str || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+	}
+
+	var indexes = {};   // clau -> Promise d'{url, items}
+	function loadIndex(key) {
+		if (indexes[key]) return indexes[key];
+		var url = new URL(listPath(key), location.href).href;
+		indexes[key] = fetch(url)
+			.then(function (res) { return res.ok ? res.text() : Promise.reject(new Error("http " + res.status)); })
+			.then(function (html) {
+				var doc = new DOMParser().parseFromString(html, "text/html");
+				var seen = {}, items = [];
+				Array.prototype.slice.call(doc.querySelectorAll(".card")).forEach(function (c) {
+					var vid = c.getAttribute("data-vid");
+					var link = c.querySelector(".poster-link");
+					var img = c.querySelector(".poster-link img");
+					var item = {
+						name: c.getAttribute("data-name") || c.getAttribute("data-title") || "",
+						year: c.getAttribute("data-year") || "",
+						edition: c.getAttribute("data-edition") || "",
+						href: link ? new URL(link.getAttribute("href"), url).href : "",
+						img: img ? new URL(img.getAttribute("src"), url).href : ""
+					};
+					item.hay = norm(item.name + " " + (c.getAttribute("data-title") || "") + " " + item.year);
+					if (vid) { // diverses versions d'un mateix títol: només una
+						if (seen[vid] !== undefined) {
+							// el títol alternatiu (Bola de Drac / Dragon Ball) també es pot cercar
+							var prev = items[seen[vid]];
+							item.hay += " " + prev.hay;
+							prev.hay = item.hay;
+							if (prev.edition && !item.edition) items[seen[vid]] = item;
+							return;
+						}
+						seen[vid] = items.length;
+					}
+					items.push(item);
+				});
+				// recompte de la targeta de la portada, ja agrupat
+				counts[key] = items.length;
+				renderCounts();
+				return { url: url, items: items };
+			});
+		return indexes[key];
+	}
+
+	// Recomptes de les targetes: es carreguen en segon pla (no trenca res si no es pot)
+	activeKeys.forEach(function (k) { loadIndex(k).catch(function () { /* file:// */ }); });
+
+	// ---- Cerca global ----
+	var input = document.getElementById("gsearch");
+	var box = document.getElementById("gresults");
+	var searchTimer = null;
+	var searchSeq = 0;
+	var MAX = 12;
+
+	function listLink(key, q) {
+		return listPath(key) + "?q=" + encodeURIComponent(q);
+	}
+
+	function el(tag, cls, text) {
+		var e = document.createElement(tag);
+		if (cls) e.className = cls;
+		if (text !== undefined) e.textContent = text;
+		return e;
+	}
+
+	function runSearch() {
+		var q = input ? input.value.trim() : "";
+		var seq = ++searchSeq;
+		if (!box) return;
+		if (q.length < 2) { box.hidden = true; box.textContent = ""; return; }
+		var terms = norm(q).split(/\s+/).filter(Boolean);
+		var dict = STRINGS[currentLang];
+
+		Promise.all(activeKeys.map(function (k) {
+			return loadIndex(k).then(function (idx) { return { key: k, idx: idx }; }, function () { return { key: k, idx: null }; });
+		})).then(function (parts) {
+			if (seq !== searchSeq) return; // ha arribat una cerca més nova
+			box.textContent = "";
+			if (parts.every(function (p) { return !p.idx; })) {
+				var msg = el("p", "gres-msg", dict.needsServer + " ");
+				msg.appendChild(document.createElement("br"));
+				activeKeys.forEach(function (k) {
+					var a = el("a", "", dict.searchIn + " " + dict[LABEL_KEY[k]]);
+					a.href = listLink(k, q);
+					msg.appendChild(a);
+				});
+				box.appendChild(msg);
+				box.hidden = false;
+				return;
+			}
+			var any = false;
+			parts.forEach(function (p) {
+				if (!p.idx) return;
+				var hits = p.idx.items.filter(function (it) {
+					return terms.every(function (t) { return it.hay.indexOf(t) !== -1; });
+				}).sort(function (a, b) {
+					var sa = norm(a.name).indexOf(terms[0]) === 0 ? 0 : 1;
+					var sb = norm(b.name).indexOf(terms[0]) === 0 ? 0 : 1;
+					return sa - sb || a.name.localeCompare(b.name);
+				});
+				if (!hits.length) return;
+				any = true;
+				var sec = el("section", "gres-group");
+				var h = el("h2", "", dict[LABEL_KEY[p.key]] + " ");
+				h.appendChild(el("small", "", "(" + hits.length + ")"));
+				sec.appendChild(h);
+				var grid = el("div", "gres-grid");
+				hits.slice(0, MAX).forEach(function (it) {
+					var a = el("a", "gres-card");
+					a.href = it.href;
+					if (it.img) {
+						var im = document.createElement("img");
+						im.src = it.img; im.alt = it.name; im.loading = "lazy";
+						a.appendChild(im);
+					}
+					a.appendChild(el("span", "t", it.name));
+					if (it.year) a.appendChild(el("span", "y", it.year));
+					grid.appendChild(a);
+				});
+				sec.appendChild(grid);
+				if (hits.length > MAX) {
+					var all = el("a", "gres-all", dict.seeAll + " (" + hits.length + ") →");
+					all.href = listLink(p.key, q);
+					sec.appendChild(all);
+				}
+				box.appendChild(sec);
+			});
+			if (!any) box.appendChild(el("p", "gres-msg", dict.noResults + " «" + q + "»"));
+			box.hidden = false;
+		});
+	}
+
+	if (input) {
+		input.addEventListener("input", function () {
+			clearTimeout(searchTimer);
+			searchTimer = setTimeout(runSearch, 200);
+		});
+		input.addEventListener("keydown", function (e) {
+			if (e.key === "Escape") { input.value = ""; runSearch(); }
+		});
+	}
+
+	applyLang(getLang());
+})();
+</script>
+
+</body>
+</html>

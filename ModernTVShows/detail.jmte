@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>${tvShow.title} (${tvShow.year})</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230b0b0e'/%3E%3Cpolygon points='9,6 19,12 9,18' fill='%23f5a623'/%3E%3C/svg%3E"/>
+<link rel="stylesheet" href="../style.css"/>
+</head>
+<body>
+
+<div class="hero" style="background-image:url('../images/${tvShow;copyArtwork(type=FANART, thumb=false, width=1280, escape=true, default=../nofanart.png)}');">
+	<a class="back-btn" href="../tvshows.html" title="Volver al listado" data-i18n-title="backToList">
+		<svg viewBox="0 0 512 512"><path d="M401.4 224h-214l83-79.4c11.9-12.5 11.9-32.7 0-45.2s-31.2-12.5-43.2 0L89 233.4c-6 5.8-9 13.7-9 22.4v.4c0 8.7 3 16.6 9 22.4l138.1 134c12 12.5 31.3 12.5 43.2 0 11.9-12.5 11.9-32.7 0-45.2l-83-79.4h214c16.9 0 30.6-14.3 30.6-32 .1-18-13.6-32-30.5-32z"/></svg>
+	</a>
+	<div class="lang-switcher" id="langSwitcher">
+		<button type="button" data-lang="ca">CA</button>
+		<button type="button" data-lang="es">ES</button>
+		<button type="button" data-lang="en">EN</button>
+	</div>
+	<div class="hero-inner">
+		<div class="hero-poster">
+			<img src="../images/${tvShow;copyArtwork(type=POSTER, thumb=true, width=320, escape=true, default=../nopicture.png)}" alt="${tvShow.title}" onerror="this.onerror=null;this.src='../nopicture.png';"/>
+		</div>
+		<div class="hero-info">
+			<h1>${tvShow.title}</h1>
+			${if tvShow.tagline}<p class="tagline">${tvShow.tagline}</p>${end}
+			<div class="badge-row">
+				<span class="pill">${tvShow.year}</span>
+				${if tvShow.seasonCount}<span class="pill">${tvShow.seasonCount} <span data-i18n="seasonsWord">temporadas</span></span>${end}
+				${if tvShow.certification}<span class="pill">${tvShow.certification}</span>${end}
+			</div>
+			<div class="genre-row">
+				${foreach tvShow.genres genre}<a class="chip" href="../tvshows.html?genre=${genre}">${genre}</a>${end}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="detail-body">
+	<div class="main">
+		<div class="plot">
+			<h2 class="section-title" data-i18n="synopsisTitle">Sinopsis</h2>
+			<p>${tvShow.plot}</p>
+		</div>
+		<div class="versions-box" id="versionsBox" hidden data-kind="tvshows" data-list="../tvshows.html" data-vid="${if tvShow.ids.tmdb}tmdb:${tvShow.ids.tmdb}${else}${if tvShow.ids.tvdb}tvdb:${tvShow.ids.tvdb}${else}${if tvShow.ids.imdb}imdb:${tvShow.ids.imdb}${end}${end}${end}"></div>
+		${if tvShow.actors}
+		<h2 class="section-title" data-i18n="castTitle">Reparto</h2>
+		<div class="cast-row">
+			${foreach tvShow.actors actor}<span class="actor"><a class="person-link" href="../tvshows.html?actor=${actor.name}">${actor.name}</a>${if actor.role} <span class="role">— ${actor.role}</span>${end}</span>${end}
+		</div>
+		${end}
+
+		<h2 class="section-title" data-i18n="episodesTitle">Episodios</h2>
+		<div id="seasons"></div>
+		<div id="episodesFlat" hidden>
+			${foreach tvShow.episodes episode}
+			<div class="episode" data-season="${episode.season}" data-episode="${episode.episode}">
+				<div class="ep-thumb">
+					<img loading="lazy" onerror="this.style.visibility='hidden';" src="../images/episodes/${episode;copyArtwork(type=THUMB, thumb=true, width=320, escape=true, default=../nofanart.png, destination=images/episodes)}" alt=""/>
+				</div>
+				<div class="ep-body">
+					<p class="ep-title"><span class="num">${episode.season}x${episode.episode;number(00)}</span>${episode.title}</p>
+					<p class="ep-plot">${episode.plot}</p>
+				</div>
+			</div>
+			${end}
+		</div>
+	</div>
+	<aside class="side">
+		<h2 class="section-title" data-i18n="techSheetTitle">Ficha técnica</h2>
+		<table class="tech-table">
+			${if tvShow.crew}<tr><td data-i18n="directorLabel">Director</td><td><span class="trim-trail">${foreach tvShow.crew person}${if person.role="Director"}<a class="person-link" href="../tvshows.html?director=${person.name}">${person.name}</a>, ${end}${end}</span></td></tr>${end}
+			${if tvShow.productionCompany}<tr><td data-i18n="studioLabel">Estudio</td><td><span class="studio-list" data-base="../tvshows.html">${tvShow.productionCompany}</span></td></tr>${end}
+			${if tvShow.certification}<tr><td data-i18n="certificationLabel">Certificación</td><td>${tvShow.certification}</td></tr>${end}
+		</table>
+	</aside>
+</div>
+
+<footer class="site-footer" data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+<script src="../../config.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

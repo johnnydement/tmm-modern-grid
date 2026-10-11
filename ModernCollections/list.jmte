@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Colecciones</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230b0b0e'/%3E%3Cpolygon points='9,6 19,12 9,18' fill='%23f5a623'/%3E%3C/svg%3E"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<header class="topbar">
+	<div class="topbar-inner">
+		<div class="brand">
+			<h1 data-i18n="collectionsTitle">Colecciones</h1>
+			<span class="count"><span id="resultCount"></span> <span data-i18n="collectionsSuffix">colecciones</span></span>
+		</div>
+		<a class="crosslink" href="../movies/movielist.html" data-route="movies" data-root="../" data-rest="movielist.html" data-i18n="toMovies">← Películas</a>
+		<a class="crosslink" href="../tvshows/tvshows.html" data-route="tvshows" data-root="../" data-rest="tvshows.html" data-i18n="toShows">Series →</a>
+		<div class="search-wrap">
+			<svg viewBox="0 0 512 512"><path d="M337.5 305.4h-17.5l-6.6-5.5c20.8-25.2 33.9-57 33.9-93.3C347.4 127.6 283.9 64 205.1 64 127.5 64 64 127.6 64 206.6s63.5 142.6 142.2 142.6c35 0 67.8-13.2 93-34l6.6 5.5v17.5L448 448l32-32-142.5-110.6zm-131.3 0c-54.7 0-98.5-43.9-98.5-98.7 0-54.9 43.8-98.7 98.5-98.7 54.7 0 98.5 43.9 98.5 98.7 0 54.9-43.8 98.7-98.5 98.7z"/></svg>
+			<input type="search" id="search" placeholder="Buscar por nombre de colección…" data-i18n-placeholder="searchCollectionsPlaceholder" autocomplete="off"/>
+		</div>
+		<div class="lang-switcher" id="langSwitcher">
+			<button type="button" data-lang="ca">CA</button>
+			<button type="button" data-lang="es">ES</button>
+			<button type="button" data-lang="en">EN</button>
+		</div>
+	</div>
+	<nav class="az-bar" id="azBar" aria-label="Filtre alfabètic"></nav>
+</header>
+
+<main>
+	<div class="grid" id="grid">
+		${foreach movieSets movieSet}
+		<div class="card" data-title="${movieSet.title}">
+			<a class="poster-link" href="./${movieSet.title}/movieset.html">
+				<div class="poster-stack">
+					${if movieSet.movies}${foreach movieSet.movies movie}<img src="images/${movie;copyArtwork(type=POSTER, thumb=true, width=350, escape=true, default=nopicture.png)}" alt="${movieSet.title}" loading="lazy" onerror="this.onerror=null;this.src='nopicture.png';"/>${end}${else}<img src="nopicture.png" alt="${movieSet.title}"/>${end}
+				</div>
+			</a>
+			<div class="meta">
+				<a class="title" href="./${movieSet.title}/movieset.html">${movieSet.title}</a>
+			</div>
+		</div>
+		${end}
+	</div>
+	<div class="empty-state" id="emptyState" data-i18n="emptyCollections">Ninguna colección coincide con la búsqueda actual.</div>
+</main>
+
+<footer class="site-footer" data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+
+<script src="../config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

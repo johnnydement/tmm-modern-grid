@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Estadísticas</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230b0b0e'/%3E%3Cpolygon points='9,6 19,12 9,18' fill='%23f5a623'/%3E%3C/svg%3E"/>
+<script src="config.js"></script>
+<style>
+:root {
+  --bg: #0b0b0e;
+  --bg-elev: #131318;
+  --card: #1b1b22;
+  --text: #ececed;
+  --text-dim: #9b9ba6;
+  --text-faint: #6b6b76;
+  --accent: #f5a623;
+  --accent-dim: #7a5518;
+  --grid: #2a2a34;
+  --series-1: #3987e5;   /* películas */
+  --series-2: #d95926;   /* series */
+  --radius: 12px;
+  --maxw: 1100px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { color-scheme: dark; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #16161d 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+}
+a { color: inherit; text-decoration: none; }
+
+.lang-switcher {
+  position: fixed; top: 1rem; right: 1rem; display: flex; gap: .25rem;
+  background: var(--bg-elev); border: 1px solid var(--grid); border-radius: 999px; padding: .25rem; z-index: 5;
+}
+.lang-switcher button {
+  border: 0; background: transparent; color: var(--text-dim); font-size: .72rem; font-weight: 700;
+  padding: .3rem .6rem; border-radius: 999px; cursor: pointer;
+}
+.lang-switcher button.active { background: var(--accent); color: #1a1205; }
+
+main { max-width: var(--maxw); margin: 0 auto; padding: 4.2rem 1.5rem 3rem; }
+.back { color: var(--text-dim); font-size: .85rem; }
+.back:hover { color: var(--accent); }
+h1 { margin: .6rem 0 .3rem; font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
+.sub { color: var(--text-dim); margin: 0 0 1.8rem; }
+
+.state { color: var(--text-dim); background: var(--card); border: 1px solid var(--grid); border-radius: var(--radius); padding: 1.2rem 1.4rem; }
+.state[hidden] { display: none; }
+
+/* ---- stat tiles ---- */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .9rem; margin-bottom: 1.4rem; }
+.tile { background: var(--card); border: 1px solid var(--grid); border-radius: var(--radius); padding: 1rem 1.1rem; }
+.tile .l { color: var(--text-dim); font-size: .78rem; }
+.tile .v { font-size: 1.9rem; font-weight: 650; line-height: 1.15; margin: .15rem 0 .1rem; }
+.tile .s { color: var(--text-faint); font-size: .74rem; }
+
+/* ---- charts ---- */
+.charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
+.chart-card { background: var(--card); border: 1px solid var(--grid); border-radius: var(--radius); padding: 1.1rem 1.2rem 1.2rem; min-width: 0; }
+.chart-card.wide { grid-column: 1 / -1; }
+.chart-card[hidden] { display: none; }
+.chart-head { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; margin-bottom: .9rem; }
+.chart-head h2 { margin: 0; font-size: 1rem; font-weight: 650; }
+.chart-head p { margin: .1rem 0 0; color: var(--text-faint); font-size: .75rem; }
+.toggle {
+  flex: none; background: transparent; color: var(--text-dim); border: 1px solid var(--grid);
+  border-radius: 999px; font-size: .72rem; padding: .22rem .7rem; cursor: pointer;
+}
+.toggle:hover { color: var(--text); border-color: var(--accent-dim); }
+.legend { display: flex; gap: 1rem; margin: 0 0 .8rem; font-size: .78rem; color: var(--text-dim); }
+.legend span { display: inline-flex; align-items: center; gap: .4rem; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+
+/* barras horizontales */
+.hbars { display: flex; flex-direction: column; gap: .5rem; }
+.hrow { display: grid; grid-template-columns: minmax(70px, 28%) 1fr; align-items: center; gap: .7rem; border-radius: 6px; padding: .12rem 0; }
+.hrow:hover, .hrow:focus-visible { background: rgba(255, 255, 255, .04); outline: none; }
+.hlabel { font-size: .8rem; color: var(--text-dim); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.htrack { position: relative; display: flex; flex-direction: column; gap: 2px; justify-content: center; min-height: 14px; }
+.hbar { height: 14px; border-radius: 0 4px 4px 0; min-width: 2px; position: relative; }
+.hbar.thin { height: 11px; }
+.hbar .hv { position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); font-size: .74rem; color: var(--text); white-space: nowrap; }
+.hbar.thin .hv { font-size: .68rem; }
+.hbar.c1 { background: var(--series-1); }
+.hbar.c2 { background: var(--series-2); }
+.hrow:hover .hbar, .hrow:focus-visible .hbar { filter: brightness(1.18); }
+
+/* columnas apiladas */
+.cols { position: relative; margin-left: 2.6rem; height: 230px; }
+.cols .gl { position: absolute; left: 0; right: 0; border-top: 1px solid var(--grid); }
+.cols .gl span { position: absolute; left: -2.6rem; width: 2.2rem; text-align: right; top: -.55rem; font-size: .68rem; color: var(--text-faint); }
+.cols .plot { position: absolute; inset: 0; display: flex; align-items: flex-end; }
+.cslot { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; border-radius: 6px; cursor: default; }
+.cslot:hover, .cslot:focus-visible { background: rgba(255, 255, 255, .04); outline: none; }
+.cstack { width: min(22px, 70%); display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
+.cseg { width: 100%; }
+.cseg.c1 { background: var(--series-1); }
+.cseg.c2 { background: var(--series-2); }
+.cseg.top { border-radius: 4px 4px 0 0; }
+.cslot:hover .cseg, .cslot:focus-visible .cseg { filter: brightness(1.18); }
+.xlabels { display: flex; margin: .4rem 0 0 2.6rem; }
+.xlabels span { flex: 1; text-align: center; font-size: .7rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; }
+
+/* tabla alternativa */
+.data-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.data-table th, .data-table td { padding: .35rem .5rem; border-bottom: 1px solid var(--grid); text-align: right; }
+.data-table th:first-child, .data-table td:first-child { text-align: left; }
+.data-table th { color: var(--text-dim); font-weight: 600; }
+.tablewrap { max-height: 320px; overflow: auto; }
+
+/* tooltip */
+.tip {
+  position: fixed; z-index: 20; pointer-events: none; background: #23232d; border: 1px solid #34343f;
+  border-radius: 8px; padding: .5rem .7rem; font-size: .76rem; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); min-width: 120px;
+}
+.tip[hidden] { display: none; }
+.tip .tt { color: var(--text-dim); margin-bottom: .25rem; }
+.tip .tr { display: flex; align-items: center; gap: .5rem; }
+.tip .tr b { font-weight: 650; color: var(--text); }
+.tip .tr .k { display: inline-block; width: 12px; height: 2px; border-radius: 1px; }
+.tip .tr .n { color: var(--text-dim); }
+
+footer { text-align: center; color: var(--text-faint); font-size: .78rem; padding: 1.2rem 1rem 1.6rem; }
+
+@media (max-width: 760px) {
+  .charts { grid-template-columns: 1fr; }
+  main { padding-left: 1rem; padding-right: 1rem; }
+}
+@media (forced-colors: active) {
+  .hbar, .cseg { forced-color-adjust: none; border: 1px solid CanvasText; }
+}
+</style>
+</head>
+<body>
+
+<div class="lang-switcher" id="langSwitcher">
+	<button type="button" data-lang="ca">CA</button>
+	<button type="button" data-lang="es">ES</button>
+	<button type="button" data-lang="en">EN</button>
+</div>
+
+<main>
+	<a class="back" href="index.html" data-i18n="back">← Inicio</a>
+	<h1 data-i18n="title">Estadísticas</h1>
+	<p class="sub" data-i18n="sub">Un vistazo a todo el catálogo</p>
+
+	<div class="state" id="state" data-i18n="loading">Cargando el catálogo…</div>
+
+	<section class="tiles" id="tiles" hidden></section>
+	<section class="charts" id="charts" hidden>
+		<article class="chart-card" id="cQuality"></article>
+		<article class="chart-card" id="cLangs"></article>
+		<article class="chart-card wide" id="cDecades"></article>
+		<article class="chart-card wide" id="cGenres"></article>
+	</section>
+</main>
+
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<footer data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+
+<script>
+(function () {
+	"use strict";
+
+	var STRINGS = {
+		ca: {
+			back: "← Inici", title: "Estadístiques", sub: "Un cop d'ull a tot el catàleg",
+			loading: "Carregant el catàleg…",
+			needsServer: "Les estadístiques llegeixen els llistats, així que només funcionen quan el web està servit per un servidor (el NAS), igual que la cerca global.",
+			movies: "Pel·lícules", shows: "Sèries", collections: "Col·leccions",
+			tHours: "Hores de cinema", tHoursSub: "≈ {d} dies seguits",
+			tSize: "Mida dels vídeos", tSizeSub: "de mitjana {s} per pel·lícula",
+			tMulti: "Amb diverses versions", tMultiSub: "{p}% dels títols",
+			tShowsSub: "{s} temporades · {e} episodis", tMoviesSub: "{n} entrades a tMM",
+			qTitle: "Qualitat de les pel·lícules", qSub: "Millor versió de cada títol",
+			lTitle: "Idiomes d'àudio", lSub: "Pel·lícules que tenen cada idioma (en qualsevol versió)",
+			dTitle: "Per dècada d'estrena", dSub: "Títols segons l'any",
+			gTitle: "Gèneres", gSub: "Els {n} més freqüents",
+			table: "Taula", chart: "Gràfic", titles: "títols", noData: "Sense dades", other: "Sense resolució",
+			footer: "Generat amb tinyMediaManager · plantilla Modern Grid"
+		},
+		es: {
+			back: "← Inicio", title: "Estadísticas", sub: "Un vistazo a todo el catálogo",
+			loading: "Cargando el catálogo…",
+			needsServer: "Las estadísticas leen los listados, así que solo funcionan cuando la web está servida por un servidor (el NAS), igual que la búsqueda global.",
+			movies: "Películas", shows: "Series", collections: "Colecciones",
+			tHours: "Horas de cine", tHoursSub: "≈ {d} días seguidos",
+			tSize: "Tamaño de los vídeos", tSizeSub: "de media {s} por película",
+			tMulti: "Con varias versiones", tMultiSub: "{p}% de los títulos",
+			tShowsSub: "{s} temporadas · {e} episodios", tMoviesSub: "{n} entradas en tMM",
+			qTitle: "Calidad de las películas", qSub: "Mejor versión de cada título",
+			lTitle: "Idiomas de audio", lSub: "Películas que tienen cada idioma (en cualquier versión)",
+			dTitle: "Por década de estreno", dSub: "Títulos según el año",
+			gTitle: "Géneros", gSub: "Los {n} más frecuentes",
+			table: "Tabla", chart: "Gráfico", titles: "títulos", noData: "Sin datos", other: "Sin resolución",
+			footer: "Generado con tinyMediaManager · plantilla Modern Grid"
+		},
+		en: {
+			back: "← Home", title: "Statistics", sub: "A glance at the whole catalog",
+			loading: "Loading the catalog…",
+			needsServer: "Statistics read the list pages, so they only work when the site is served by a web server (the NAS), like the global search.",
+			movies: "Movies", shows: "TV Shows", collections: "Collections",
+			tHours: "Hours of film", tHoursSub: "≈ {d} days non-stop",
+			tSize: "Video size", tSizeSub: "{s} per movie on average",
+			tMulti: "With several versions", tMultiSub: "{p}% of titles",
+			tShowsSub: "{s} seasons · {e} episodes", tMoviesSub: "{n} tMM entries",
+			qTitle: "Movie quality", qSub: "Best version of each title",
+			lTitle: "Audio languages", lSub: "Movies that have each language (in any version)",
+			dTitle: "By release decade", dSub: "Titles by year",
+			gTitle: "Genres", gSub: "The {n} most frequent",
+			table: "Table", chart: "Chart", titles: "titles", noData: "No data", other: "No resolution",
+			footer: "Generated with tinyMediaManager · Modern Grid template"
+		}
+	};
+
+	var DEF_DIR = { movies: "movies", tvshows: "tvshows", collections: "collections" };
+	var LIST_FILE = { movies: "movielist.html", tvshows: "tvshows.html", collections: "moviesets.html" };
+	// ISO 639-2 (3 lletres) -> ISO 639-1 (2 lletres). Els codis ja de 2 lletres es deixen tal qual.
+	var ALIAS = {
+		spa: "es", cat: "ca", eng: "en", fra: "fr", fre: "fr", deu: "de", ger: "de", ita: "it",
+		por: "pt", jpn: "ja", jp: "ja", kor: "ko", kr: "ko", zho: "zh", chi: "zh", cn: "zh",
+		rus: "ru", nld: "nl", dut: "nl", pol: "pl", swe: "sv", tur: "tr", ara: "ar", hin: "hi",
+		eus: "eu", baq: "eu", glg: "gl", ces: "cs", cze: "cs", ukr: "uk", ind: "id", hun: "hu",
+		amh: "am", div: "dv", lit: "lt", tha: "th", heb: "he", ell: "el", gre: "el", fin: "fi",
+		dan: "da", nor: "no", nob: "nb", ron: "ro", rum: "ro", bul: "bg", hrv: "hr", srp: "sr",
+		slk: "sk", slo: "sk", slv: "sl", vie: "vi", fas: "fa", per: "fa", msa: "ms", may: "ms",
+		ben: "bn", urd: "ur", cym: "cy", wel: "cy", gle: "ga", isl: "is", ice: "is", hye: "hy",
+		arm: "hy", kat: "ka", geo: "ka", est: "et", lav: "lv", mkd: "mk", mac: "mk", sqi: "sq",
+		alb: "sq"
+	};
+	var RES_ORDER = ["2160p", "1440p", "1080p", "720p", "SD"];
+
+	var lang = "en";
+	var data = null; // { movies:[], shows:[], collections:n, entriesMovies:n, ... }
+
+	// ---------------- utilitats ----------------
+	function t(key) { return (STRINGS[lang] && STRINGS[lang][key]) || STRINGS.en[key] || key; }
+	function tf(key, map) {
+		return t(key).replace(/\{(\w+)\}/g, function (m, k) { return map[k] !== undefined ? map[k] : m; });
+	}
+	function nf(n, digits) {
+		try { return new Intl.NumberFormat(lang, { maximumFractionDigits: digits || 0 }).format(n); }
+		catch (e) { return String(Math.round(n)); }
+	}
+	function el(tag, cls, text) {
+		var e = document.createElement(tag);
+		if (cls) e.className = cls;
+		if (text !== undefined) e.textContent = text;
+		return e;
+	}
+	function routeDir(key) {
+		var cfg = (window.TMM_CONFIG && window.TMM_CONFIG.routes) || {};
+		var d = Object.prototype.hasOwnProperty.call(cfg, key) ? cfg[key] : DEF_DIR[key];
+		if (d === null || d === false || d === undefined || d === "") return null;
+		return String(d).replace(/^\.?\/+/, "").replace(/\/+$/, "");
+	}
+	// Codis propis de config.js (languageCodes), com a app.js
+	function customLang(code) {
+		var m = (window.TMM_CONFIG && window.TMM_CONFIG.languageCodes) || {};
+		var k = String(code || "").trim().toLowerCase();
+		for (var key in m) {
+			if (Object.prototype.hasOwnProperty.call(m, key) && key.toLowerCase() === k) return m[key] || {};
+		}
+		return null;
+	}
+	// Regió (pt-BR, es-419, zh-Hant): s'accepta però es descarta (com tMM), tret que la variant
+	// estigui declarada a languageCodes. "zxx" = cinema mut. Igual que a app.js.
+	var SUB_RX = /^(?:[a-z]{2}|\d{3}|[a-z]{4})$/;
+	var LANG_NAMES = {
+		zxx: { ca: "Muda (sense diàleg)", es: "Muda (sin diálogo)", en: "Silent (no dialogue)" }
+	};
+	function resolveLang(raw, depth) {
+		var def = customLang(raw);
+		if (def) {
+			if (def.alias && depth < 3) return resolveLang(String(def.alias).trim().toLowerCase().replace(/_/g, "-"), depth + 1) || raw;
+			return raw;
+		}
+		var p = raw.split("-");
+		var c = p[0];
+		if (!c || c === "und" || c === "mul") return "";
+		c = ALIAS[c] || c;
+		if (p[1] && SUB_RX.test(p[1]) && customLang(c + "-" + p[1])) return resolveLang(c + "-" + p[1], depth + 1);
+		return c;
+	}
+	function normLang(code) {
+		return resolveLang(String(code || "").trim().toLowerCase().replace(/_/g, "-"), 0);
+	}
+	// Origen dels idiomes: pistes d'àudio ("tracks") o nom de fitxer ("filename"), com a app.js
+	function langSource() {
+		var c = window.TMM_CONFIG || {};
+		return c.languageSource === "filename" ? "filename" : "tracks";
+	}
+	function knownLang(c) {
+		if (customLang(c) || LANG_NAMES[c]) return true;
+		try {
+			var n = new Intl.DisplayNames(["en"], { type: "language" }).of(c);
+			return !!n && String(n).toLowerCase() !== c;
+		} catch (e) { return c.length === 2; }
+	}
+	var NAME_RX = /\[\s*([A-Za-z]{2,3}(?:[-_](?:[A-Za-z]{2}|\d{3}|[A-Za-z]{4}))?(?:\s*[,.\/+&\s]\s*[A-Za-z]{2,3}(?:[-_](?:[A-Za-z]{2}|\d{3}|[A-Za-z]{4}))?)*)\s*\]/g;
+	function langsFromName(path) {
+		var s = String(path || "");
+		try { s = decodeURIComponent(s); } catch (e) { /* ja descodificat */ }
+		s = s.split("?")[0].split("#")[0];
+		s = s.slice(s.lastIndexOf("/") + 1);
+		var out = [], m;
+		NAME_RX.lastIndex = 0;
+		while ((m = NAME_RX.exec(s)) !== null) {
+			m[1].split(/[\s,.\/+&]+/).forEach(function (t) {
+				var c = normLang(t);
+				if (c && knownLang(c)) out.push(c);
+			});
+		}
+		return out;
+	}
+	function langName(code) {
+		var def = customLang(code);
+		if (def && def.name) {
+			if (typeof def.name === "string") return def.name;
+			return def.name[lang] || def.name.en || def.name[Object.keys(def.name)[0]] || code.toUpperCase();
+		}
+		if (LANG_NAMES[code]) return LANG_NAMES[code][lang] || LANG_NAMES[code].en;
+		try {
+			var n = new Intl.DisplayNames([lang], { type: "language" }).of(code);
+			if (n && n.toLowerCase() !== code) return n.charAt(0).toUpperCase() + n.slice(1);
+		} catch (e) { /* ignore */ }
+		return code.toUpperCase();
+	}
+	function resLabel(w, h) {
+		w = parseInt(w, 10) || 0; h = parseInt(h, 10) || 0;
+		if (w >= 3000 || h >= 2000) return "2160p";
+		if (w >= 2400 || h >= 1300) return "1440p";
+		if (w >= 1800 || h >= 1000) return "1080p";
+		if (w >= 1200 || h >= 700) return "720p";
+		return (w || h) ? "SD" : "";
+	}
+	// mateix format que data-media: tipus~AxB~còdec~hdr~bytes~canals:idioma,...§
+	function videos(raw) {
+		return String(raw || "").split("§").map(function (rec) {
+			var f = rec.split("~");
+			if (f.length < 5 || f[0].trim() !== "VIDEO") return null;
+			var dims = (f[1] || "").split("x");
+			return {
+				res: resLabel(dims[0], dims[1]),
+				bytes: parseInt(f[4], 10) || 0,
+				langs: (f[5] || "").split(",").map(function (s) { return normLang((s.split(":")[1] || "")); }).filter(Boolean)
+			};
+		}).filter(Boolean);
+	}
+	function decadeOf(y) { y = parseInt(y, 10); return y > 0 ? Math.floor(y / 10) * 10 : 0; }
+	function fmtSize(bytes) {
+		var tb = bytes / Math.pow(1024, 4), gb = bytes / Math.pow(1024, 3);
+		return tb >= 1 ? nf(tb, 2) + " TB" : nf(gb, gb >= 100 ? 0 : 1) + " GB";
+	}
+
+	// ---------------- dades ----------------
+	function loadList(key) {
+		var url = new URL(routeDir(key) + "/" + LIST_FILE[key], location.href).href;
+		return fetch(url)
+			.then(function (res) { return res.ok ? res.text() : Promise.reject(new Error("http " + res.status)); })
+			.then(function (html) {
+				var doc = new DOMParser().parseFromString(html, "text/html");
+				return Array.prototype.slice.call(doc.querySelectorAll(".card")).map(function (c) {
+					var a = c.querySelector(".poster-link");
+					return {
+						vid: c.getAttribute("data-vid") || "",
+						href: a ? a.getAttribute("href") : "",
+						year: c.getAttribute("data-year") || "",
+						genres: (c.getAttribute("data-genres") || "").split("|").filter(Boolean),
+						media: c.getAttribute("data-media") || "",
+						runtime: parseInt(c.getAttribute("data-runtime"), 10) || 0,
+						seasons: parseInt(c.getAttribute("data-seasons"), 10) || 0,
+						episodes: parseInt(c.getAttribute("data-episodes"), 10) || 0
+					};
+				});
+			});
+	}
+
+	function groupCards(cards) {
+		var by = {}, groups = [];
+		cards.forEach(function (c) {
+			var g = c.vid ? by[c.vid] : null;
+			if (!g) { g = { cards: [] }; groups.push(g); if (c.vid) by[c.vid] = g; }
+			g.cards.push(c);
+		});
+		groups.forEach(function (g) {
+			var hrefs = {};
+			g.pages = 0;
+			g.cards.forEach(function (c) { if (!hrefs[c.href]) { hrefs[c.href] = 1; g.pages++; } });
+		});
+		return groups;
+	}
+
+	function buildMovies(cards) {
+		return groupCards(cards).map(function (g) {
+			var best = "", bytes = 0, langs = {}, runtime = 0;
+			g.cards.forEach(function (c) {
+				if (!runtime && c.runtime) runtime = c.runtime;
+				if (langSource() === "filename") langsFromName(c.href).forEach(function (l) { langs[l] = true; });
+				videos(c.media).forEach(function (v) {
+					bytes += v.bytes;
+					if (v.res && RES_ORDER.indexOf(v.res) !== -1 && (!best || RES_ORDER.indexOf(v.res) < RES_ORDER.indexOf(best))) best = v.res;
+					if (langSource() !== "filename") v.langs.forEach(function (l) { langs[l] = true; });
+				});
+			});
+			return { year: g.cards[0].year, genres: g.cards[0].genres, best: best, bytes: bytes, langs: Object.keys(langs), runtime: runtime, multi: g.pages > 1, entries: g.cards.length };
+		});
+	}
+	function buildShows(cards) {
+		return groupCards(cards).map(function (g) {
+			var c = g.cards[g.cards.length - 1];
+			return { year: c.year, genres: c.genres, seasons: c.seasons, episodes: c.episodes, multi: g.pages > 1, entries: g.cards.length };
+		});
+	}
+
+	// ---------------- tooltip ----------------
+	var tip = document.getElementById("tip");
+	function showTip(rows, title, x, y) {
+		tip.textContent = "";
+		if (title) tip.appendChild(el("div", "tt", title));
+		rows.forEach(function (r) {
+			var row = el("div", "tr");
+			if (r.color) { var k = el("i", "k"); k.style.background = r.color; row.appendChild(k); }
+			row.appendChild(el("b", "", r.value));
+			if (r.name) row.appendChild(el("span", "n", r.name));
+			tip.appendChild(row);
+		});
+		tip.hidden = false;
+		var w = tip.offsetWidth, h = tip.offsetHeight;
+		var nx = Math.min(x + 14, window.innerWidth - w - 8);
+		var ny = y + 16 + h > window.innerHeight ? y - h - 12 : y + 16;
+		tip.style.left = Math.max(8, nx) + "px";
+		tip.style.top = Math.max(8, ny) + "px";
+	}
+	function hideTip() { tip.hidden = true; }
+	function bindTip(node, rowsFn, titleFn) {
+		node.tabIndex = 0;
+		node.addEventListener("pointermove", function (e) { showTip(rowsFn(), titleFn(), e.clientX, e.clientY); });
+		node.addEventListener("pointerleave", hideTip);
+		node.addEventListener("focus", function () {
+			var r = node.getBoundingClientRect();
+			showTip(rowsFn(), titleFn(), r.left + r.width / 2, r.top + r.height / 2);
+		});
+		node.addEventListener("blur", hideTip);
+	}
+
+	// ---------------- components ----------------
+	var tableMode = {}; // id -> bool (es recorda en canviar d'idioma)
+
+	function cardShell(id, title, sub, buildChart, tableData) {
+		var card = document.getElementById(id);
+		card.textContent = "";
+		var head = el("div", "chart-head");
+		var hl = el("div");
+		hl.appendChild(el("h2", "", title));
+		hl.appendChild(el("p", "", sub));
+		head.appendChild(hl);
+		var btn = el("button", "toggle", tableMode[id] ? t("chart") : t("table"));
+		btn.type = "button";
+		btn.setAttribute("aria-pressed", tableMode[id] ? "true" : "false");
+		btn.addEventListener("click", function () { tableMode[id] = !tableMode[id]; cardShell(id, title, sub, buildChart, tableData); });
+		head.appendChild(btn);
+		card.appendChild(head);
+		if (tableMode[id]) {
+			var wrap = el("div", "tablewrap");
+			var tb = el("table", "data-table");
+			var thead = el("tr");
+			tableData.head.forEach(function (h) { thead.appendChild(el("th", "", h)); });
+			tb.appendChild(thead);
+			tableData.rows.forEach(function (r) {
+				var tr = el("tr");
+				r.forEach(function (v) { tr.appendChild(el("td", "", v)); });
+				tb.appendChild(tr);
+			});
+			wrap.appendChild(tb);
+			card.appendChild(wrap);
+		} else {
+			buildChart(card);
+		}
+	}
+
+	function legend(items) {
+		var lg = el("div", "legend");
+		items.forEach(function (it) {
+			var s = el("span");
+			var sw = el("i"); sw.style.background = it.color;
+			s.appendChild(sw); s.appendChild(document.createTextNode(it.name));
+			lg.appendChild(s);
+		});
+		return lg;
+	}
+
+	// barras horizontales; series: [{name, cls, color, values:[]}]; rows: labels
+	function hbars(card, labels, series, titleFor) {
+		var max = 0;
+		series.forEach(function (s) { s.values.forEach(function (v) { if (v > max) max = v; }); });
+		if (!max) { card.appendChild(el("p", "state", t("noData"))); return; }
+		if (series.length > 1) card.appendChild(legend(series.map(function (s) { return { name: s.name, color: s.color }; })));
+		var wrap = el("div", "hbars");
+		labels.forEach(function (lab, i) {
+			var row = el("div", "hrow");
+			var l = el("span", "hlabel", lab); l.title = lab;
+			row.appendChild(l);
+			var track = el("div", "htrack");
+			series.forEach(function (s) {
+				var v = s.values[i];
+				var bar = el("div", "hbar " + s.cls + (series.length > 1 ? " thin" : ""));
+				bar.style.width = (v / max * 86) + "%";
+				if (v === 0) bar.style.visibility = "hidden";
+				else bar.appendChild(el("span", "hv", nf(v)));
+				track.appendChild(bar);
+			});
+			row.appendChild(track);
+			bindTip(row, function () {
+				return series.map(function (s) { return { color: s.color, value: nf(s.values[i]), name: s.name }; });
+			}, function () { return lab; });
+			wrap.appendChild(row);
+		});
+		card.appendChild(wrap);
+	}
+
+	function niceStep(maxv) {
+		var raw = maxv / 4, pow = Math.pow(10, Math.floor(Math.log10(raw || 1)));
+		var f = raw / pow;
+		return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * pow;
+	}
+
+	function stackedColumns(card, labels, series) {
+		var totals = labels.map(function (_, i) { return series.reduce(function (s, x) { return s + x.values[i]; }, 0); });
+		var maxv = Math.max.apply(null, totals);
+		if (!maxv) { card.appendChild(el("p", "state", t("noData"))); return; }
+		if (series.length > 1) card.appendChild(legend(series.map(function (s) { return { name: s.name, color: s.color }; })));
+		var step = niceStep(maxv), top = Math.ceil(maxv / step) * step;
+		var cols = el("div", "cols");
+		for (var v = 0; v <= top; v += step) {
+			var gl = el("div", "gl");
+			gl.style.bottom = (v / top * 100) + "%";
+			gl.appendChild(el("span", "", nf(v)));
+			cols.appendChild(gl);
+		}
+		var plot = el("div", "plot");
+		labels.forEach(function (lab, i) {
+			var slot = el("div", "cslot");
+			var stack = el("div", "cstack");
+			var present = series.filter(function (s) { return s.values[i] > 0; });
+			present.forEach(function (s, k) {
+				var seg = el("div", "cseg " + s.cls + (k === present.length - 1 ? " top" : ""));
+				seg.style.height = (s.values[i] / top * 230 - (present.length > 1 ? 1 : 0)) + "px";
+				stack.appendChild(seg);
+			});
+			slot.appendChild(stack);
+			bindTip(slot, function () {
+				return series.map(function (s) { return { color: s.color, value: nf(s.values[i]), name: s.name }; });
+			}, function () { return lab; });
+			plot.appendChild(slot);
+		});
+		cols.appendChild(plot);
+		card.appendChild(cols);
+		var xl = el("div", "xlabels");
+		labels.forEach(function (lab) { xl.appendChild(el("span", "", lab)); });
+		card.appendChild(xl);
+	}
+
+	// ---------------- render ----------------
+	function tile(label, value, sub) {
+		var d = el("div", "tile");
+		d.appendChild(el("div", "l", label));
+		d.appendChild(el("div", "v", value));
+		if (sub) d.appendChild(el("div", "s", sub));
+		return d;
+	}
+
+	function render() {
+		if (!data) return;
+		var C1 = "#3987e5", C2 = "#d95926";
+		var movies = data.movies, shows = data.shows;
+
+		// ---- tiles ----
+		var tiles = document.getElementById("tiles");
+		tiles.textContent = "";
+		if (movies) tiles.appendChild(tile(t("movies"), nf(movies.length), data.entriesMovies !== movies.length ? tf("tMoviesSub", { n: nf(data.entriesMovies) }) : ""));
+		if (shows) {
+			var se = shows.reduce(function (s, x) { return s + x.seasons; }, 0);
+			var ep = shows.reduce(function (s, x) { return s + x.episodes; }, 0);
+			tiles.appendChild(tile(t("shows"), nf(shows.length), tf("tShowsSub", { s: nf(se), e: nf(ep) })));
+		}
+		if (data.collections !== null) tiles.appendChild(tile(t("collections"), nf(data.collections), ""));
+		if (movies) {
+			var minutes = movies.reduce(function (s, m) { return s + m.runtime; }, 0);
+			tiles.appendChild(tile(t("tHours"), nf(minutes / 60), tf("tHoursSub", { d: nf(minutes / 60 / 24, 1) })));
+			var bytes = movies.reduce(function (s, m) { return s + m.bytes; }, 0);
+			tiles.appendChild(tile(t("tSize"), fmtSize(bytes), movies.length ? tf("tSizeSub", { s: fmtSize(bytes / movies.length) }) : ""));
+		}
+		var all = (movies || []).concat(shows || []);
+		var multi = all.filter(function (x) { return x.multi; }).length;
+		tiles.appendChild(tile(t("tMulti"), nf(multi), tf("tMultiSub", { p: nf(all.length ? multi / all.length * 100 : 0, 1) })));
+		tiles.hidden = false;
+
+		// ---- quality ----
+		var cq = document.getElementById("cQuality");
+		cq.hidden = !movies;
+		if (movies) {
+			var qc = {}, none = 0;
+			movies.forEach(function (m) { if (m.best) qc[m.best] = (qc[m.best] || 0) + 1; else none++; });
+			var qLabels = RES_ORDER.filter(function (r) { return qc[r]; }), qVals = qLabels.map(function (r) { return qc[r]; });
+			if (none) { qLabels.push(t("other")); qVals.push(none); }
+			cardShell("cQuality", t("qTitle"), t("qSub"), function (card) {
+				hbars(card, qLabels, [{ name: t("titles"), cls: "c1", color: C1, values: qVals }]);
+			}, { head: [t("qTitle"), t("titles")], rows: qLabels.map(function (l, i) { return [l, nf(qVals[i])]; }) });
+		}
+
+		// ---- languages ----
+		var cl = document.getElementById("cLangs");
+		cl.hidden = !movies;
+		if (movies) {
+			var lc = {};
+			movies.forEach(function (m) { m.langs.forEach(function (l) { lc[l] = (lc[l] || 0) + 1; }); });
+			var lKeys = Object.keys(lc).sort(function (a, b) { return lc[b] - lc[a]; }).slice(0, 10);
+			var lLabels = lKeys.map(langName), lVals = lKeys.map(function (k) { return lc[k]; });
+			cardShell("cLangs", t("lTitle"), t("lSub"), function (card) {
+				hbars(card, lLabels, [{ name: t("movies"), cls: "c1", color: C1, values: lVals }]);
+			}, { head: [t("lTitle"), t("movies")], rows: lLabels.map(function (l, i) { return [l, nf(lVals[i])]; }) });
+		}
+
+		// ---- decades ----
+		var dec = {};
+		(movies || []).forEach(function (m) { var d = decadeOf(m.year); if (d) { dec[d] = dec[d] || [0, 0]; dec[d][0]++; } });
+		(shows || []).forEach(function (s) { var d = decadeOf(s.year); if (d) { dec[d] = dec[d] || [0, 0]; dec[d][1]++; } });
+		var dKeys = Object.keys(dec).map(Number).sort(function (a, b) { return a - b; });
+		// es mantenen les dècades intermèdies buides per no enganyar l'eix
+		if (dKeys.length) {
+			var full = [];
+			for (var d0 = dKeys[0]; d0 <= dKeys[dKeys.length - 1]; d0 += 10) full.push(d0);
+			dKeys = full;
+		}
+		var dSeries = [];
+		if (movies) dSeries.push({ name: t("movies"), cls: "c1", color: C1, values: dKeys.map(function (k) { return dec[k] ? dec[k][0] : 0; }) });
+		if (shows) dSeries.push({ name: t("shows"), cls: "c2", color: C2, values: dKeys.map(function (k) { return dec[k] ? dec[k][1] : 0; }) });
+		var dLabels = dKeys.map(function (k) { return k + "s"; });
+		cardShell("cDecades", t("dTitle"), t("dSub"), function (card) {
+			stackedColumns(card, dLabels, dSeries);
+		}, { head: [t("dTitle")].concat(dSeries.map(function (s) { return s.name; })), rows: dLabels.map(function (l, i) { return [l].concat(dSeries.map(function (s) { return nf(s.values[i]); })); }) });
+
+		// ---- genres ----
+		var gm = {}, gs = {};
+		(movies || []).forEach(function (m) { m.genres.forEach(function (g) { gm[g] = (gm[g] || 0) + 1; }); });
+		(shows || []).forEach(function (s) { s.genres.forEach(function (g) { gs[g] = (gs[g] || 0) + 1; }); });
+		var gAll = {};
+		Object.keys(gm).concat(Object.keys(gs)).forEach(function (g) { gAll[g] = (gm[g] || 0) + (gs[g] || 0); });
+		var N = 12;
+		var gKeys = Object.keys(gAll).sort(function (a, b) { return gAll[b] - gAll[a] || a.localeCompare(b); }).slice(0, N);
+		var gSeries = [];
+		if (movies) gSeries.push({ name: t("movies"), cls: "c1", color: C1, values: gKeys.map(function (g) { return gm[g] || 0; }) });
+		if (shows) gSeries.push({ name: t("shows"), cls: "c2", color: C2, values: gKeys.map(function (g) { return gs[g] || 0; }) });
+		cardShell("cGenres", t("gTitle"), tf("gSub", { n: gKeys.length }), function (card) {
+			hbars(card, gKeys, gSeries);
+		}, { head: [t("gTitle")].concat(gSeries.map(function (s) { return s.name; })), rows: gKeys.map(function (g, i) { return [g].concat(gSeries.map(function (s) { return nf(s.values[i]); })); }) });
+
+		document.getElementById("charts").hidden = false;
+	}
+
+	// ---------------- idioma ----------------
+	function getLang() {
+		try { var s = localStorage.getItem("tmm_lang"); if (s && STRINGS[s]) return s; } catch (e) { /* ignore */ }
+		return "en";
+	}
+	function applyLang(l) {
+		lang = STRINGS[l] ? l : "en";
+		Array.prototype.slice.call(document.querySelectorAll("[data-i18n]")).forEach(function (n) {
+			var v = STRINGS[lang][n.getAttribute("data-i18n")];
+			if (v) n.textContent = v;
+		});
+		Array.prototype.slice.call(document.querySelectorAll("#langSwitcher button")).forEach(function (b) {
+			b.classList.toggle("active", b.dataset.lang === lang);
+		});
+		document.documentElement.lang = lang;
+		document.title = t("title");
+		hideTip();
+		render();
+	}
+	Array.prototype.slice.call(document.querySelectorAll("#langSwitcher button")).forEach(function (b) {
+		b.addEventListener("click", function () {
+			try { localStorage.setItem("tmm_lang", b.dataset.lang); } catch (e) { /* ignore */ }
+			applyLang(b.dataset.lang);
+		});
+	});
+
+	// ---------------- càrrega ----------------
+	var state = document.getElementById("state");
+	function load() {
+		var keys = ["movies", "tvshows", "collections"].filter(function (k) { return routeDir(k) !== null; });
+		return Promise.all(keys.map(function (k) {
+			return loadList(k).then(function (cards) { return { key: k, cards: cards }; }, function () { return { key: k, cards: null }; });
+		})).then(function (parts) {
+			if (parts.every(function (p) { return p.cards === null; })) {
+				state.textContent = t("needsServer");
+				state.setAttribute("data-i18n", "needsServer");
+				return;
+			}
+			var d = { movies: null, shows: null, collections: null, entriesMovies: 0 };
+			parts.forEach(function (p) {
+				if (!p.cards) return;
+				if (p.key === "movies") { d.movies = buildMovies(p.cards); d.entriesMovies = p.cards.length; }
+				if (p.key === "tvshows") d.shows = buildShows(p.cards);
+				if (p.key === "collections") d.collections = p.cards.length;
+			});
+			data = d;
+			state.hidden = true;
+			render();
+		});
+	}
+
+	applyLang(getLang());
+	if (typeof fetch === "function") load().catch(function () { state.textContent = t("needsServer"); });
+	else state.textContent = t("needsServer");
+})();
+</script>
+</body>
+</html>
