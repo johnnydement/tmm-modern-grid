@@ -598,8 +598,9 @@ var TMM_LANG = (function () {
 /* --------------------------------------------------------------------------
    Routes between exports. The folders where you exported movies, TV shows
    and collections can be changed in ONE file, config.js, at the web root
-   (the parent folder of the three). If it does not exist, the default names
-   apply (movies / tvshows / collections). A cross-export link carries
+   (the parent folder of the three). If it does not exist (or has no "routes"), each
+   export stands alone: no links to the others. If "routes" exists and a key is missing,
+   the default name applies (movies / tvshows / collections). A cross-export link carries
    data-route (key), data-root (path back to the root, e.g. "../../") and
    data-rest (the rest of the path); its href is recomputed here. A route
    set to null or "" hides the links pointing to it.
@@ -610,16 +611,33 @@ var TMM_ROUTES = (function () {
   var DEF = { movies: "movies", tvshows: "tvshows", collections: "collections" };
 
   function dir(key) {
-    var cfg = (window.TMM_CONFIG && window.TMM_CONFIG.routes) || {};
+    var cfg = window.TMM_CONFIG && window.TMM_CONFIG.routes;
+    // Sense config.js (o sense "routes"), cada exportació va per lliure: cap enllaç cap a les altres.
+    if (!cfg || typeof cfg !== "object") return null;
     var d = Object.prototype.hasOwnProperty.call(cfg, key) ? cfg[key] : DEF[key];
     if (d === null || d === false || d === undefined || d === "") return null;
     return String(d).replace(/^\.?\/+/, "").replace(/\/+$/, "");
   }
 
+  // Enllaç cap a una exportació que no hi és: els botons i xips s'amaguen; els enllaços de
+  // contingut (pòster, títol) es queden com a text, sense poder-hi fer clic.
+  function off(a) {
+    if (a.classList.contains("crosslink") || a.classList.contains("chip")) {
+      a.style.display = "none";
+      var par = a.parentNode;
+      if (par && par.tagName === "P" && par.children.length === 1) par.style.display = "none";
+    } else {
+      a.style.pointerEvents = "none";
+      a.style.cursor = "default";
+      a.setAttribute("tabindex", "-1");
+      a.setAttribute("aria-disabled", "true");
+    }
+  }
+
   function apply() {
     Array.prototype.slice.call(document.querySelectorAll("a[data-route]")).forEach(function (a) {
       var d = dir(a.getAttribute("data-route"));
-      if (d === null) { a.style.display = "none"; return; }
+      if (d === null) { off(a); return; }
       a.setAttribute("href", (a.getAttribute("data-root") || "") + d + "/" + (a.getAttribute("data-rest") || ""));
     });
   }

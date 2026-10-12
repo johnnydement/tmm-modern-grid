@@ -9,6 +9,9 @@
      - If you rename a folder, change it here; no need to re-export anything.
      - A value of null or "" means "I don't have this": its button on the landing
        page and every link pointing to it from the other exports are hidden.
+     - Without this file (or without "routes"), each export stands alone: the templates
+       show no links to the others, so a single template works by itself, even from disk.
+       Add this file only if you want the three exports linked together.
    languageSource: where the audio languages come from (flags on the posters, the
      "Audio language" filter, the statistics page).
        "tracks"   (default) the language tag of each audio stream in the media file.
@@ -31,7 +34,7 @@
      "zxx" (no linguistic content, silent films) is built in. Note "la" is Latin in ISO: if you use LA for
      Latin American Spanish, declare it as in the example above.
 
-   If this file is missing, the defaults below are used.
+   If this file is missing, the exports are standalone and the landing page uses the default folder names below.
    ========================================================================== */
 window.TMM_CONFIG = {
   routes: {

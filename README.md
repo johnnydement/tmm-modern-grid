@@ -7,6 +7,10 @@ library into a fast, dark, poster-grid website: one template for **movies**, one
 Everything is plain HTML, CSS and JavaScript. **No server, no build step, no external dependencies** — export
 from tMM, copy the folder to a web server (or just double-click `movielist.html`) and it works.
 
+**Each template is standalone**, like the ones that ship with tMM: it simply produces its own `movielist.html`
+(or `tvshows.html`, `moviesets.html`), and you can install just one of them. The landing page that links the three
+together is an optional extra.
+
 I built it because I wanted my own collection to look like a streaming service, minus the monthly fee and the
 "are you still watching?" guilt trip. It has been through many rounds against my real library, so it has
 survived more odd file names than any sane person should have to look at.
@@ -82,18 +86,21 @@ Download the zips from the [latest release](../../releases/latest):
 my-site/
 ├── index.html        ← from ModernGrid-Home.zip (optional)
 ├── stats.html        ← from ModernGrid-Home.zip (optional)
-├── config.js         ← from ModernGrid-Home.zip (only needed if you use other folder names)
+├── config.js         ← from ModernGrid-Home.zip (optional: links the exports together; also language settings)
 ├── movies/           ← export of "Modern Grid - Movies"       (movielist.html, movies/…)
 ├── tvshows/          ← export of "Modern Grid - TV Shows"     (tvshows.html, <show>/tvshow.html)
 └── collections/      ← export of "Modern Grid - Collections"  (moviesets.html, <collection>/movieset.html)
 ```
 
-The three exports link to each other (header buttons, "collection" chips on movie pages, movies inside a
-collection), so keep them as **siblings**. The default folder names are `movies`, `tvshows` and `collections`.
+If you want the three exports linked (header buttons, "collection" chips on movie pages, movies inside a
+collection), keep them as **siblings** and put `config.js` at the root, as described next. Without `config.js`
+each export stands alone and shows no links to the others, so nothing ever points at a page that does not exist.
+The default folder names are `movies`, `tvshows` and `collections`.
 
-### Using other folder names (`config.js`)
+### Linking the exports together (`config.js`)
 
-Put `config.js` at the root of the site (next to `index.html`) and name your folders:
+`config.js` (from `ModernGrid-Home.zip`) goes at the root of the site, next to `index.html`. With its `routes`
+present the exports link to each other; edit the names if your folders are called something else:
 
 ```js
 window.TMM_CONFIG = {
@@ -106,7 +113,8 @@ window.TMM_CONFIG = {
 ```
 
 You can rename a folder later by editing this one file; nothing has to be exported again. If `config.js` is
-missing, the defaults above are used.
+missing, or has no `routes`, the exports are standalone and show no links to each other (the landing page, if you
+use it, falls back to the default folder names).
 
 ### Languages from the file name (`languageSource`)
 
