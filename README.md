@@ -302,8 +302,8 @@ to fork it and adapt it to your own library. If it breaks, you now own the piece
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md). Latest: **0.24.0** — first public release (English defaults for folder
-names, English docs, release tooling), on top of 0.23.0 (duration filter on TV shows, "unknown runtime" option),
+See [CHANGELOG.md](CHANGELOG.md). Latest: **0.24.1** — templates are standalone by default (no dead links to exports you don't have), on top of 0.24.0 (first
+public release: English defaults for folder names, English docs, release tooling) and 0.23.0 (duration filter on TV shows, "unknown runtime" option),
 0.22.0 (duration filter), 0.21.x (audio-language filter with AND / OR), 0.20.0 (decade → year),
 0.19.0 (statistics page), 0.18.0 (shared route config, global search).
 

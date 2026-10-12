@@ -13,15 +13,26 @@ Every release listed here has been tested by me on real exports of my own librar
 
 ---
 
+## [0.24.1] — Standalone templates by default
+
+### Fixed
+- **Each template is now standalone by default.** Without `config.js` (or without its `routes`) the templates show no
+  links to the other exports: the header buttons and the "collection" chip are hidden, and posters/titles in a
+  collection page stay as plain content instead of pointing at a missing export. Before, a lone *Movies* export
+  showed dead "Series" and "Collections" buttons. To link the exports, put `config.js` (from the Home zip) at the
+  site root; with a `config.js` that has `routes`, nothing changes.
+
+### Changed
+- README: it now says up front that every template works on its own and that the landing page is an optional extra;
+  the `config.js` section explains when the exports are linked.
+
+---
+
 ## [0.24.0] — First public release
 
 The first version I'm showing to the outside world. Be gentle.
 
 ### Changed
-- **Each template is now standalone by default.** Without `config.js` (or without its `routes`) the templates show no
-  links to the other exports: the header buttons and the "collection" chip are hidden, and posters/titles in a collection
-  page stay as plain content instead of pointing at a missing export. Before, a lone *Movies* export showed dead
-  "Series" and "Collections" buttons. To link the exports, put `config.js` (from the Home zip) at the site root.
 - Default export folder names are now `movies` / `tvshows` / `collections` (they were
   my own `pelis` / `tv` / `sagas`). This affects the fallback links in the list/detail
   templates, the Home page and `TMM_ROUTES` in `app.js`. **Upgrading from an earlier version:** set the
