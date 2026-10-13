@@ -13,6 +13,19 @@ Every release listed here has been tested by me on real exports of my own librar
 
 ---
 
+## [0.25.0] — Home and Statistics links on every page
+
+### Added
+- **Home** and **Statistics** links in the header of every list page (movies, TV shows, collections) and in the top-left
+  corner of every detail page, translated into Catalan, Spanish and English. They are switched on in `config.js`
+  with `routes.home` / `routes.stats` (`true` for `index.html` / `stats.html` at the site root, or a file name). Missing,
+  `false` or `""` means no link, so a template never points at a page you did not install. The `config.js` in the Home zip
+  has both on; on narrow screens the Statistics link in a detail page is hidden to leave room for the language switch.
+- To get the links, copy the new templates into tMM and **re-export once**: they live in the list and detail templates, so
+  uploading `config.js` alone is not enough.
+
+---
+
 ## [0.24.1] — Standalone templates by default
 
 ### Fixed

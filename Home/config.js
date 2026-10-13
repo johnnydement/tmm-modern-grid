@@ -9,6 +9,9 @@
      - If you rename a folder, change it here; no need to re-export anything.
      - A value of null or "" means "I don't have this": its button on the landing
        page and every link pointing to it from the other exports are hidden.
+     - home / stats: "Home" and "Statistics" links in the header of every list and detail page.
+       They are files, not folders, and must be switched on: true (index.html / stats.html at the
+       root) or a file name. Missing, false or "" = no link, so nothing ever points at a missing page.
      - Without this file (or without "routes"), each export stands alone: the templates
        show no links to the others, so a single template works by itself, even from disk.
        Add this file only if you want the three exports linked together.
@@ -40,7 +43,9 @@ window.TMM_CONFIG = {
   routes: {
     movies: "movies",            // movies        (contains movielist.html and movies/)
     tvshows: "tvshows",          // TV shows      (contains tvshows.html)
-    collections: "collections"   // collections   (contains moviesets.html)
+    collections: "collections",  // collections   (contains moviesets.html)
+    home: true,                  // "Home" link on every page (index.html at the root); false/"" = hide
+    stats: true                  // "Statistics" link on every page (stats.html at the root); false/"" = hide
   },
   languageSource: "tracks",      // "tracks" | "filename"
   languageCodes: {}              // see above

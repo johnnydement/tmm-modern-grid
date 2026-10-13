@@ -22,6 +22,8 @@ var TMM_I18N = (function () {
       toShows: "Sèries →",
       toMovies: "← Pel·lícules",
       toCollections: "Col·leccions →",
+      toHome: "⌂ Inici",
+      toStats: "Estadístiques",
       searchPlaceholder: "Cerca per títol, any o gènere…",
       filterToggle: "Filtres ▾",
       genre: "Gènere",
@@ -106,6 +108,8 @@ var TMM_I18N = (function () {
       toShows: "Series →",
       toMovies: "← Películas",
       toCollections: "Colecciones →",
+      toHome: "⌂ Inicio",
+      toStats: "Estadísticas",
       searchPlaceholder: "Buscar por título, año o género…",
       filterToggle: "Filtros ▾",
       genre: "Género",
@@ -190,6 +194,8 @@ var TMM_I18N = (function () {
       toShows: "TV Shows →",
       toMovies: "← Movies",
       toCollections: "Collections →",
+      toHome: "⌂ Home",
+      toStats: "Statistics",
       searchPlaceholder: "Search by title, year or genre…",
       filterToggle: "Filters ▾",
       genre: "Genre",
@@ -634,16 +640,37 @@ var TMM_ROUTES = (function () {
     }
   }
 
+  // La portada (index.html) i les estadístiques (stats.html) són FITXERS a l'arrel, no carpetes, i
+  // s'han d'activar de manera explícita a config.js: routes.home / routes.stats = true (nom per
+  // defecte) o el nom del fitxer. Si no hi són, l'enllaç s'amaga (així no n'hi ha cap de trencat).
+  var FILES = { home: "index.html", stats: "stats.html" };
+  function file(key) {
+    var cfg = window.TMM_CONFIG && window.TMM_CONFIG.routes;
+    if (!cfg || typeof cfg !== "object") return null;
+    var v = cfg[key];
+    if (v === true) return FILES[key];
+    if (typeof v === "string" && v) return v.replace(/^\.?\/+/, "");
+    return null;
+  }
+
   function apply() {
     Array.prototype.slice.call(document.querySelectorAll("a[data-route]")).forEach(function (a) {
-      var d = dir(a.getAttribute("data-route"));
+      var key = a.getAttribute("data-route");
+      var root = a.getAttribute("data-root") || "";
+      if (FILES[key]) {
+        var f = file(key);
+        if (f === null) { off(a); return; }
+        a.setAttribute("href", root + f);
+        return;
+      }
+      var d = dir(key);
       if (d === null) { off(a); return; }
-      a.setAttribute("href", (a.getAttribute("data-root") || "") + d + "/" + (a.getAttribute("data-rest") || ""));
+      a.setAttribute("href", root + d + "/" + (a.getAttribute("data-rest") || ""));
     });
   }
 
   apply();
-  return { dir: dir, apply: apply };
+  return { dir: dir, file: file, apply: apply };
 })();
 
 /* --------------------------------------------------------------------------

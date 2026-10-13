@@ -440,6 +440,15 @@ img { max-width: 100%; display: block; }
 }
 .back-btn svg { width: 1.1rem; height: 1.1rem; fill: var(--text); }
 
+/* Enllaços a la portada i a les estadístiques (només si config.js els activa) */
+.hero-links { position: absolute; top: 1rem; left: 3.9rem; z-index: 5; display: flex; gap: .4rem; }
+.hero-links .crosslink {
+  background: rgba(0,0,0,.55); border-color: transparent; color: var(--text);
+  height: 2.2rem; display: inline-flex; align-items: center; padding: 0 .9rem;
+}
+.hero-links .crosslink:hover { border-color: var(--accent); }
+@media (max-width: 560px) { .hero-links .crosslink.stats { display: none; } }
+
 .hero .lang-switcher {
   position: absolute;
   top: 1rem;

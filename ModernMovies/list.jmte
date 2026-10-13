@@ -15,8 +15,10 @@
 			<h1 data-i18n="moviesTitle">Películas</h1>
 			<span class="count"><span id="resultCount"></span> <span data-i18n="titlesSuffix">títulos</span></span>
 		</div>
+		<a class="crosslink" href="../index.html" data-route="home" data-root="../" data-rest="" data-i18n="toHome">⌂ Inicio</a>
 		<a class="crosslink" href="../tvshows/tvshows.html" data-route="tvshows" data-root="../" data-rest="tvshows.html" data-i18n="toShows">Series →</a>
 		<a class="crosslink" href="../collections/moviesets.html" data-route="collections" data-root="../" data-rest="moviesets.html" data-i18n="toCollections">Colecciones →</a>
+		<a class="crosslink" href="../stats.html" data-route="stats" data-root="../" data-rest="" data-i18n="toStats">Estadísticas</a>
 		<div class="search-wrap">
 			<svg viewBox="0 0 512 512"><path d="M337.5 305.4h-17.5l-6.6-5.5c20.8-25.2 33.9-57 33.9-93.3C347.4 127.6 283.9 64 205.1 64 127.5 64 64 127.6 64 206.6s63.5 142.6 142.2 142.6c35 0 67.8-13.2 93-34l6.6 5.5v17.5L448 448l32-32-142.5-110.6zm-131.3 0c-54.7 0-98.5-43.9-98.5-98.7 0-54.9 43.8-98.7 98.5-98.7 54.7 0 98.5 43.9 98.5 98.7 0 54.9-43.8 98.7-98.5 98.7z"/></svg>
 			<input type="search" id="search" placeholder="Buscar por título, año o género…" data-i18n-placeholder="searchPlaceholder" autocomplete="off"/>
