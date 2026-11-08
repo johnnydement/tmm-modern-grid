@@ -13,6 +13,23 @@ Every release listed here has been tested by me on real exports of my own librar
 
 ---
 
+## [0.28.0] — Code comments in English
+
+### Changed
+- **Every code comment is now in English.** Since 0.24.0 only `config.js` and the route comment in `app.js` were; the rest of
+  the comments in `app.js`, `style.css`, `index.html` and `stats.html` were a mix of Catalan and Spanish, which is charming if you
+  read both and a puzzle for everyone else. The interface texts (Catalan, Spanish and English) are untouched.
+- Only comments changed: with the comments stripped, every file is identical to 0.27.0, so the pages behave exactly as before.
+
+### Known issues
+- About 200 comments were translated in one go, so a few may read oddly or no longer match what the code next to them does.
+  If you find one, you are most welcome to open an issue, which I will then ignore with great affection (see Support in the README).
+  In any disagreement the code is right and the comment is the suspect; feel free to write your own.
+
+No re-export needed, and nothing to update if you are on 0.27.0 and never read the source.
+
+---
+
 ## [0.27.0] — Light theme and sun/moon toggle
 
 ### Added
@@ -568,5 +585,5 @@ The first version I'm showing to the outside world. Be gentle.
 
 ## Known issues / upstream
 
-- **tMM collection titles with `:` or `/` abort the Collections export** (see 0.9.0). Rename
-  them in tMM until the fixed release is installed.
+- **tMM collection titles with `:` or `/` abort the Collections export** (see 0.9.0). Fixed upstream:
+  tMM 5.3.4 handles `:` and 5.3.5 handles `/` and `\` (see 0.26.1). On older versions, rename those collections in tMM.

@@ -32,7 +32,7 @@ survived more odd file names than any sane person should have to look at.
   are grouped into one card with a ×N badge; the detail page lists all versions and links between them.
 - Quality badge (2160p / 1080p / 720p / SD) and **audio-language flags** on every card, read from your
   media files.
-- Detail pages with hero image, synopsis, cast, crew, studios, technical table, watched / pending mark,
+- Detail pages with hero image, synopsis, cast, crew, studios, technical table and
   collapsible seasons on TV shows. Actors, directors and studios are clickable and filter the list.
 - Interface in **Catalan, Spanish and English** (switch in the top-right corner, remembered in the browser; English by default).
 
@@ -230,8 +230,8 @@ which produces names like these (the titles are made up, and when `edition` is e
 is simply not generated):
 
 ```
-Example Film(2001) [Remastered] [ca, es, en, JP] [1080p] [h265] [AC3 2ch 2.0] {tmdb=1234}.html
-Example Film(2001) [ca, es, LA, en] [2160p] [h265] [DTSHD-MA 6ch 5.1] {tmdb=1234}.html
+Example Film (2001) [Remastered] [ca, es, en, JP] [1080p] [h265] [AC3 2ch 2.0] {tmdb=1234}.html
+Example Film (2001) [ca, es, LA, en] [2160p] [h265] [DTSHD-MA 6ch 5.1] {tmdb=1234}.html
 ```
 
 Only the bracket group with nothing but language codes is read; `[Remastered]`, `[1080p]`, `[AC3 2ch 2.0]` and the
@@ -326,7 +326,8 @@ List pages understand these query parameters (all optional, combinable):
 - `bash scripts/build-release.sh [version]` writes the zips described above to `dist/`.
 - Pushing a tag like `v0.24.0` runs `.github/workflows/release.yml`, which verifies the sync, builds the
   zips and attaches them to a GitHub Release.
-- Source comments are mostly in Catalan, because that is the language I think and swear in. A translator will get you there.
+- Source comments are in English since 0.28.0. They used to be in Catalan (and some in Spanish), the languages I think and
+  swear in; the swearing did not survive the translation. If a comment reads oddly, the code next to it is the reference.
 
 ## Support
 
@@ -337,11 +338,16 @@ to fork it and adapt it to your own library. If it breaks, you now own the piece
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md). Latest: **0.27.0** — a light theme with a sun/moon toggle, on top of 0.26.1 — collection links follow tMM's own folder name (colons, slashes), which needs tMM 5.3.5 or later (older ones fall back to the title), on top of 0.26.0 (Basque and Galician flags, links to the other sections on the statistics page), 0.25.1 (the A–Z bar becomes a dropdown on very narrow screens), 0.25.0 (Home and Statistics links in every header, switched on in `config.js`) and 0.24.1 (templates standalone by
-default, no dead links) and 0.24.0 (first
-public release: English defaults for folder names, English docs, release tooling) and 0.23.0 (duration filter on TV shows, "unknown runtime" option),
-0.22.0 (duration filter), 0.21.x (audio-language filter with AND / OR), 0.20.0 (decade → year),
-0.19.0 (statistics page), 0.18.0 (shared route config, global search).
+See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest: **0.28.0** — every code comment is now in English
+(no functional change). Recent versions:
+
+- **0.27.0**: light theme with a sun/moon toggle.
+- **0.26.1**: collection links follow tMM's own folder name (colons, slashes); needs tMM 5.3.5 or later, older ones fall back to the title.
+- **0.26.0**: Basque and Galician flags, links to the other sections on the statistics page.
+- **0.25.1**: the A–Z bar becomes a dropdown on very narrow screens.
+- **0.25.0**: Home and Statistics links in every header, switched on in `config.js`.
+- **0.24.1**: templates standalone by default, no dead links.
+- **0.24.0**: first public release (English defaults for folder names, English docs, release tooling).
 
 ## Licence
 

@@ -18,8 +18,8 @@
   --accent: #f5a623;
   --accent-dim: #7a5518;
   --grid: #2a2a34;
-  --series-1: #3987e5;   /* películas */
-  --series-2: #d95926;   /* series */
+  --series-1: #3987e5;   /* movies */
+  --series-2: #d95926;   /* TV shows */
   --radius: 12px;
   --maxw: 1100px;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -38,8 +38,8 @@
   color-scheme: dark;
 }
 
-/* Tema clar (crema + ambre). Segueix el sistema (prefers-color-scheme) i el botó sol/lluna de la
-   capçalera el pot forçar: <html data-theme="light|dark">. Sense JS el tema continua seguint el sistema. */
+/* Light theme (cream + amber). It follows the system (prefers-color-scheme) and the sun/moon button in the
+   header can force it: <html data-theme="light|dark">. Without JS the theme keeps following the system. */
 :root[data-theme="light"] {
   --bg: #f6f1e7;
   --bg-elev: #fbf8f1;
@@ -150,7 +150,7 @@ h1 { margin: .6rem 0 .3rem; font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
 .legend span { display: inline-flex; align-items: center; gap: .4rem; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
 
-/* barras horizontales */
+/* horizontal bars */
 .hbars { display: flex; flex-direction: column; gap: .5rem; }
 .hrow { display: grid; grid-template-columns: minmax(70px, 28%) 1fr; align-items: center; gap: .7rem; border-radius: 6px; padding: .12rem 0; }
 .hrow:hover, .hrow:focus-visible { background: var(--hover); outline: none; }
@@ -164,7 +164,7 @@ h1 { margin: .6rem 0 .3rem; font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
 .hbar.c2 { background: var(--series-2); }
 .hrow:hover .hbar, .hrow:focus-visible .hbar { filter: brightness(1.18); }
 
-/* columnas apiladas */
+/* stacked columns */
 .cols { position: relative; margin-left: 2.6rem; height: 230px; }
 .cols .gl { position: absolute; left: 0; right: 0; border-top: 1px solid var(--grid); }
 .cols .gl span { position: absolute; left: -2.6rem; width: 2.2rem; text-align: right; top: -.55rem; font-size: .68rem; color: var(--text-faint); }
@@ -180,7 +180,7 @@ h1 { margin: .6rem 0 .3rem; font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
 .xlabels { display: flex; margin: .4rem 0 0 2.6rem; }
 .xlabels span { flex: 1; text-align: center; font-size: .7rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; }
 
-/* tabla alternativa */
+/* fallback table */
 .data-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
 .data-table th, .data-table td { padding: .35rem .5rem; border-bottom: 1px solid var(--grid); text-align: right; }
 .data-table th:first-child, .data-table td:first-child { text-align: left; }
@@ -208,7 +208,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 @media (forced-colors: active) {
   .hbar, .cseg { forced-color-adjust: none; border: 1px solid CanvasText; }
 }
-/* Botó de tema sol/lluna (dins del selector d'idioma) */
+/* Sun/moon theme button (inside the language selector) */
 .theme-toggle { display: inline-flex; align-items: center; justify-content: center; }
 .theme-toggle svg { width: 1.45em; height: 1.45em; display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .theme-toggle .i-sun { display: none; }
@@ -254,8 +254,8 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 <footer data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
 
 <script>
-/* Tema clar / fosc: com a app.js (TMM_THEME). Per defecte segueix el sistema; el botó sol/lluna força l'altre i
-   es recorda a localStorage ("tmm_theme"). Si es torna al tema del sistema, el valor s'esborra. */
+/* Light / dark theme: same as app.js (TMM_THEME). By default it follows the system; the sun/moon button forces the other one and
+   it is remembered in localStorage ("tmm_theme"). Going back to the system theme deletes the value. */
 (function () {
 	"use strict";
 	var KEY = "tmm_theme", root = document.documentElement;
@@ -354,7 +354,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 
 	var DEF_DIR = { movies: "movies", tvshows: "tvshows", collections: "collections" };
 	var LIST_FILE = { movies: "movielist.html", tvshows: "tvshows.html", collections: "moviesets.html" };
-	// ISO 639-2 (3 lletres) -> ISO 639-1 (2 lletres). Els codis ja de 2 lletres es deixen tal qual.
+	// ISO 639-2 (3 letters) -> ISO 639-1 (2 letters). Codes that already have 2 letters are left as they are.
 	var ALIAS = {
 		spa: "es", cat: "ca", eng: "en", fra: "fr", fre: "fr", deu: "de", ger: "de", ita: "it",
 		por: "pt", jpn: "ja", jp: "ja", kor: "ko", kr: "ko", zho: "zh", chi: "zh", cn: "zh",
@@ -372,7 +372,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 	var lang = "en";
 	var data = null; // { movies:[], shows:[], collections:n, entriesMovies:n, ... }
 
-	// ---------------- utilitats ----------------
+	// ---------------- utilities ----------------
 	function t(key) { return (STRINGS[lang] && STRINGS[lang][key]) || STRINGS.en[key] || key; }
 	function tf(key, map) {
 		return t(key).replace(/\{(\w+)\}/g, function (m, k) { return map[k] !== undefined ? map[k] : m; });
@@ -393,7 +393,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		if (d === null || d === false || d === undefined || d === "") return null;
 		return String(d).replace(/^\.?\/+/, "").replace(/\/+$/, "");
 	}
-	// Codis propis de config.js (languageCodes), com a app.js
+	// Custom codes from config.js (languageCodes), same as app.js
 	function customLang(code) {
 		var m = (window.TMM_CONFIG && window.TMM_CONFIG.languageCodes) || {};
 		var k = String(code || "").trim().toLowerCase();
@@ -402,8 +402,8 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		}
 		return null;
 	}
-	// Regió (pt-BR, es-419, zh-Hant): s'accepta però es descarta (com tMM), tret que la variant
-	// estigui declarada a languageCodes. "zxx" = cinema mut. Igual que a app.js.
+	// Region (pt-BR, es-419, zh-Hant): accepted but dropped (like tMM does), unless the variant
+	// is declared in languageCodes. "zxx" = silent film. Same as app.js.
 	var SUB_RX = /^(?:[a-z]{2}|\d{3}|[a-z]{4})$/;
 	var LANG_NAMES = {
 		zxx: { ca: "Muda (sense diàleg)", es: "Muda (sin diálogo)", en: "Silent (no dialogue)" }
@@ -424,7 +424,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 	function normLang(code) {
 		return resolveLang(String(code || "").trim().toLowerCase().replace(/_/g, "-"), 0);
 	}
-	// Origen dels idiomes: pistes d'àudio ("tracks") o nom de fitxer ("filename"), com a app.js
+	// Language source: audio tracks ("tracks") or file name ("filename"), same as app.js
 	function langSource() {
 		var c = window.TMM_CONFIG || {};
 		return c.languageSource === "filename" ? "filename" : "tracks";
@@ -439,7 +439,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 	var NAME_RX = /\[\s*([A-Za-z]{2,3}(?:[-_](?:[A-Za-z]{2}|\d{3}|[A-Za-z]{4}))?(?:\s*[,.\/+&\s]\s*[A-Za-z]{2,3}(?:[-_](?:[A-Za-z]{2}|\d{3}|[A-Za-z]{4}))?)*)\s*\]/g;
 	function langsFromName(path) {
 		var s = String(path || "");
-		try { s = decodeURIComponent(s); } catch (e) { /* ja descodificat */ }
+		try { s = decodeURIComponent(s); } catch (e) { /* already decoded */ }
 		s = s.split("?")[0].split("#")[0];
 		s = s.slice(s.lastIndexOf("/") + 1);
 		var out = [], m;
@@ -473,7 +473,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		if (w >= 1200 || h >= 700) return "720p";
 		return (w || h) ? "SD" : "";
 	}
-	// mateix format que data-media: tipus~AxB~còdec~hdr~bytes~canals:idioma,...§
+	// same format as data-media: type~WxH~codec~hdr~bytes~channels:language,...§
 	function videos(raw) {
 		return String(raw || "").split("§").map(function (rec) {
 			var f = rec.split("~");
@@ -492,7 +492,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		return tb >= 1 ? nf(tb, 2) + " TB" : nf(gb, gb >= 100 ? 0 : 1) + " GB";
 	}
 
-	// ---------------- dades ----------------
+	// ---------------- data ----------------
 	function loadList(key) {
 		var url = new URL(routeDir(key) + "/" + LIST_FILE[key], location.href).href;
 		return fetch(url)
@@ -584,7 +584,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 	}
 
 	// ---------------- components ----------------
-	var tableMode = {}; // id -> bool (es recorda en canviar d'idioma)
+	var tableMode = {}; // id -> bool (remembered when the language changes)
 
 	function cardShell(id, title, sub, buildChart, tableData) {
 		var card = document.getElementById(id);
@@ -629,7 +629,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		return lg;
 	}
 
-	// barras horizontales; series: [{name, cls, color, values:[]}]; rows: labels
+	// horizontal bars; series: [{name, cls, color, values:[]}]; rows: labels
 	function hbars(card, labels, series, titleFor) {
 		var max = 0;
 		series.forEach(function (s) { s.values.forEach(function (v) { if (v > max) max = v; }); });
@@ -766,7 +766,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		(movies || []).forEach(function (m) { var d = decadeOf(m.year); if (d) { dec[d] = dec[d] || [0, 0]; dec[d][0]++; } });
 		(shows || []).forEach(function (s) { var d = decadeOf(s.year); if (d) { dec[d] = dec[d] || [0, 0]; dec[d][1]++; } });
 		var dKeys = Object.keys(dec).map(Number).sort(function (a, b) { return a - b; });
-		// es mantenen les dècades intermèdies buides per no enganyar l'eix
+		// empty decades in between are kept so the axis doesn't mislead
 		if (dKeys.length) {
 			var full = [];
 			for (var d0 = dKeys[0]; d0 <= dKeys[dKeys.length - 1]; d0 += 10) full.push(d0);
@@ -798,7 +798,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		document.getElementById("charts").hidden = false;
 	}
 
-	// ---------------- idioma ----------------
+	// ---------------- language ----------------
 	function getLang() {
 		try { var s = localStorage.getItem("tmm_lang"); if (s && STRINGS[s]) return s; } catch (e) { /* ignore */ }
 		return "en";
@@ -826,8 +826,8 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		});
 	});
 
-	// ---------------- càrrega ----------------
-	// Enllaços a les altres seccions (segons config.js; sense la carpeta, s'amaguen)
+	// ---------------- loading ----------------
+	// Links to the other sections (per config.js; hidden if the folder is missing)
 	Array.prototype.slice.call(document.querySelectorAll("[data-nav]")).forEach(function (a) {
 		var k = a.getAttribute("data-nav"), d = routeDir(k);
 		if (d === null) return;

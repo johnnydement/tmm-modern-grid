@@ -1,13 +1,13 @@
 /* ==========================================================================
-   Modern Dark Grid — lógica de búsqueda, filtros, orden e idioma (100% client-side)
-   Archivo compartido entre la plantilla de Películas y la de Series.
-   Lee los atributos data-* de cada .card, no toca nada del servidor.
+   Modern Dark Grid — search, filter, sorting and language logic (100% client-side)
+   File shared by the Movies and TV Shows templates.
+   Reads the data-* attributes of each .card; nothing touches the server.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Internacionalización (ca / es / en) — sin servidor, todo en el navegador.
-   Se expone como TMM_I18N para que lo usen también los demás bloques de
-   este fichero (agrupación de episodios, etc.).
+   Internationalisation (ca / es / en) — no server, everything in the browser.
+   Exposed as TMM_I18N so the other blocks of this file
+   can use it too (episode grouping, etc.).
    -------------------------------------------------------------------------- */
 var TMM_I18N = (function () {
   "use strict";
@@ -291,7 +291,7 @@ var TMM_I18N = (function () {
   }
 
   function setLang(lang) {
-    try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* localStorage no disponible */ }
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* localStorage not available */ }
   }
 
   function dict() { return STRINGS[getLang()] || STRINGS.en; }
@@ -346,10 +346,10 @@ var TMM_I18N = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Tema clar / fosc. Per defecte segueix el sistema (CSS: prefers-color-scheme, sense JS). El botó sol/lluna
-   (afegit a cada #langSwitcher) pot forçar l'altre tema: es guarda a localStorage ("light" | "dark") i
-   s'aplica com <html data-theme>. Si l'usuari torna al tema del sistema, el valor es BORRA (no es fixa res).
-   No es mira mai si el sistema "coincideix" amb el valor guardat: molts sistemes canvien sols de dia a nit.
+   Light / dark theme. By default it follows the system (CSS: prefers-color-scheme, no JS). The sun/moon button
+   (added to every #langSwitcher) can force the other theme: it is saved in localStorage ("light" | "dark") and
+   applied as <html data-theme>. If the user goes back to the system theme, the value is DELETED (nothing is pinned).
+   It never checks whether the system "matches" the saved value: many systems switch from day to night on their own.
    -------------------------------------------------------------------------- */
 var TMM_THEME = (function () {
   "use strict";
@@ -366,7 +366,7 @@ var TMM_THEME = (function () {
     try { var v = localStorage.getItem(KEY); return v === "light" || v === "dark" ? v : null; } catch (e) { return null; }
   }
   function write(v) {
-    try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); } catch (e) { /* sense emmagatzematge: l'efecte dura només aquesta pàgina */ }
+    try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); } catch (e) { /* no storage: the effect only lasts for this page */ }
   }
   var override = read();
 
@@ -389,7 +389,7 @@ var TMM_THEME = (function () {
 
   function toggle() {
     var target = current() === "dark" ? "light" : "dark";
-    // Si el destí és el del sistema, l'usuari desfà el seu ajust: s'esborra, no es fixa.
+    // If the target is the system theme, the user is undoing their choice: delete it, don't pin it.
     override = target === system() ? null : target;
     write(override);
     paint();
@@ -421,11 +421,11 @@ var TMM_THEME = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Dades del fitxer de vídeo. Els .jmte exporten TOTS els fitxers multimèdia
-   d'una pel·lícula (vídeo, pòsters, nfo...) en un text pla i aquí es tria el
-   de tipus VIDEO i es calcula la resolució a partir de l'amplada/alçada
-   real (així 1920x1072, 1920x1080 o 1916x800 surten tots com a 1080p).
-   Format: tipus~AMPLExALÇADA~còdec~hdr~bytes~canals,canals,§ (un per fitxer)
+   Video file data. The .jmte files export ALL the media files
+   of a movie (video, posters, nfo...) as plain text; here the one of type
+   VIDEO is picked and the resolution is worked out from the real
+   width/height (so 1920x1072, 1920x1080 and 1916x800 all come out as 1080p).
+   Format: type~WIDTHxHEIGHT~codec~hdr~bytes~channels,channels,§ (one per file)
    -------------------------------------------------------------------------- */
 var TMM_MEDIA = (function () {
   "use strict";
@@ -440,7 +440,7 @@ var TMM_MEDIA = (function () {
     return (w || h) ? "SD" : "";
   }
 
-  // Torna només els fitxers de vídeo, ja analitzats
+  // Returns only the video files, already parsed
   function videos(raw) {
     return String(raw || "").split("§").map(function (rec) {
       var f = rec.split("~");
@@ -470,15 +470,15 @@ var TMM_MEDIA = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Idiomes d'àudio amb banderes. Windows no pinta les emoji de bandera, així que
-   les banderes són SVG propis (inclosos aquí). Els codis que dona tMM poden ser
-   de 2 o 3 lletres i amb majúscules rares ("es", "spa", "JP"): es normalitzen.
-   El nom en clar surt en passar-hi el ratolí, en l'idioma de la interfície.
+   Audio languages with flags. Windows does not render flag emoji, so the
+   flags are our own SVGs (included here). The codes tMM provides can be
+   2 or 3 letters long, with odd capitalisation ("es", "spa", "JP"): they are normalised.
+   The full name shows on mouse hover, in the interface language.
    -------------------------------------------------------------------------- */
 var TMM_LANG = (function () {
   "use strict";
 
-  // ISO 639-2 (3 lletres) -> ISO 639-1 (2 lletres). Els codis ja de 2 lletres es deixen tal qual.
+  // ISO 639-2 (3 letters) -> ISO 639-1 (2 letters). Codes that already have 2 letters are left as they are.
   var ALIAS = {
     spa: "es", cat: "ca", eng: "en", fra: "fr", fre: "fr", deu: "de", ger: "de", ita: "it",
     por: "pt", jpn: "ja", jp: "ja", kor: "ko", kr: "ko", zho: "zh", chi: "zh", cn: "zh",
@@ -512,8 +512,8 @@ var TMM_LANG = (function () {
     gl: '<rect width="60" height="40" fill="#fff"/><path d="M0,0L60,40" stroke="#0a6fb5" stroke-width="9"/>'
   };
 
-  // Codis propis definits a config.js (languageCodes). Tenen prioritat sobre l'estàndard:
-  // així es pot definir, p. ex., "la" com a castellà llatinoamericà (a ISO "la" és el llatí).
+  // Custom codes defined in config.js (languageCodes). They take priority over the standard,
+  // so you can define, e.g., "la" as Latin American Spanish (in ISO "la" is Latin).
   function customDef(code) {
     var m = (window.TMM_CONFIG && window.TMM_CONFIG.languageCodes) || {};
     var k = String(code || "").trim().toLowerCase();
@@ -523,12 +523,12 @@ var TMM_LANG = (function () {
     return null;
   }
 
-  // Regió o escriptura d'un codi ("pt-BR", "es-419", "zh-Hant"): s'accepta al nom de fitxer i a les
-  // etiquetes, però com fa tMM (pt-BR = portuguès, es-MX i es-419 = castellà) el codi es queda en
-  // l'idioma base. Qui vulgui distingir una variant la declara a languageCodes de config.js
-  // ("pt-BR": {} ja la manté a part, amb bandera pt, marca "BR" i nom automàtic).
+  // Region or script of a code ("pt-BR", "es-419", "zh-Hant"): accepted in file names and in
+  // tags, but, as tMM does (pt-BR = Portuguese, es-MX and es-419 = Spanish), the code is reduced to
+  // the base language. To keep a variant apart, declare it in languageCodes in config.js
+  // ("pt-BR": {} is enough: pt flag, "BR" mark and an automatic name).
   var SUB_RX = /^(?:[a-z]{2}|\d{3}|[a-z]{4})$/;
-  // "zxx" (ISO 639-2: sense contingut lingüístic) = cinema mut; tMM també l'admet. No té codi de 2 lletres.
+  // "zxx" (ISO 639-2: no linguistic content) = silent film; tMM supports it too. It has no 2-letter code.
   var NAMES = {
     zxx: { ca: "Muda (sense diàleg)", es: "Muda (sin diálogo)", en: "Silent (no dialogue)" }
   };
@@ -536,7 +536,7 @@ var TMM_LANG = (function () {
   function resolve(raw, depth) {
     var def = customDef(raw);
     if (def) {
-      // alias: un codi propi que és el mateix que un altre ({ alias: "pt-BR" }): es fusionen
+      // alias: a custom code that means the same as another one ({ alias: "pt-BR" }): they are merged
       if (def.alias && depth < 3) return resolve(String(def.alias).trim().toLowerCase().replace(/_/g, "-"), depth + 1) || raw;
       return raw;
     }
@@ -544,17 +544,17 @@ var TMM_LANG = (function () {
     var c = p[0];
     if (!c || c === "und" || c === "mul") return "";
     c = ALIAS[c] || c;
-    // variant declarada a config.js ("pt-br"): entrada pròpia; si no, la regió es descarta
+    // variant declared in config.js ("pt-br"): its own entry; otherwise the region is dropped
     if (p[1] && SUB_RX.test(p[1]) && customDef(c + "-" + p[1])) return resolve(c + "-" + p[1], depth + 1);
     return c;
   }
 
-  // Codi canònic en minúscules: "ES" -> "es", "spa" -> "es", "es-ES" / "pt_BR" -> "es" / "pt"
+  // Canonical lowercase code: "ES" -> "es", "spa" -> "es", "es-ES" / "pt_BR" -> "es" / "pt"
   function norm(code) {
     return resolve(String(code || "").trim().toLowerCase().replace(/_/g, "-"), 0);
   }
 
-  // Ordre fix per als idiomes de la casa (ca, es, en); la resta, en l'ordre d'aparició
+  // Fixed order for the house languages (ca, es, en); the rest in order of appearance
   var PRIORITY = ["ca", "es", "en"];
   function order(codes) {
     var seen = {}, out = [];
@@ -563,7 +563,7 @@ var TMM_LANG = (function () {
     return first.concat(out.filter(function (c) { return PRIORITY.indexOf(c) === -1; }));
   }
 
-  // Idiomes únics dels fitxers de vídeo analitzats (etiqueta de cada pista d'àudio)
+  // Unique languages of the parsed video files (tag of each audio track)
   function fromVideos(videos) {
     var out = [];
     videos.forEach(function (v) {
@@ -572,14 +572,14 @@ var TMM_LANG = (function () {
     return order(out);
   }
 
-  // D'on surten els idiomes: de les pistes d'àudio ("tracks", per defecte) o del nom
-  // de fitxer ("filename"), segons window.TMM_CONFIG.languageSource (a config.js).
+  // Where the languages come from: the audio tracks ("tracks", default) or the file
+  // name ("filename"), according to window.TMM_CONFIG.languageSource (in config.js).
   function source() {
     var c = window.TMM_CONFIG || {};
     return c.languageSource === "filename" ? "filename" : "tracks";
   }
 
-  // Un codi és un idioma de debò? (descarta "[DC]", "[HD]"... que també tenen 2-3 lletres)
+  // Is the code a real language? (rules out "[DC]", "[HD]"... which also have 2-3 letters)
   function known(c) {
     if (FLAGS[c] || customDef(c) || NAMES[c]) return true;
     try {
@@ -588,14 +588,14 @@ var TMM_LANG = (function () {
     } catch (e) { return c.length === 2; }
   }
 
-  // Idiomes d'un nom de fitxer: els grups entre claudàtors que NOMÉS tenen codis d'idioma
-  // de 2-3 lletres (amb regió opcional: pt-BR, es-419, zh-Hant), separats per coma, punt,
-  // espai, "/", "+" o "&": [CA,ES,EN,JA], [es, en], [ES.EN], [ES,PT-BR]. Un grup amb qualsevol
-  // altra cosa ([Remasterizado IA], [1080p]...) s'ignora.
+  // Languages in a file name: the bracket groups that contain ONLY language codes
+  // of 2-3 letters (optional region: pt-BR, es-419, zh-Hant), separated by comma, dot,
+  // space, "/", "+" or "&": [CA,ES,EN,JA], [es, en], [ES.EN], [ES,PT-BR]. A group with anything
+  // else ([Remasterizado IA], [1080p]...) is ignored.
   var NAME_RX = /\[\s*([A-Za-z]{2,3}(?:[-_](?:[A-Za-z]{2}|\d{3}|[A-Za-z]{4}))?(?:\s*[,.\/+&\s]\s*[A-Za-z]{2,3}(?:[-_](?:[A-Za-z]{2}|\d{3}|[A-Za-z]{4}))?)*)\s*\]/g;
   function fromName(path) {
     var s = String(path || "");
-    try { s = decodeURIComponent(s); } catch (e) { /* ja descodificat */ }
+    try { s = decodeURIComponent(s); } catch (e) { /* already decoded */ }
     s = s.split("?")[0].split("#")[0];
     s = s.slice(s.lastIndexOf("/") + 1);
     var out = [], m;
@@ -609,7 +609,7 @@ var TMM_LANG = (function () {
     return order(out);
   }
 
-  // Idiomes d'una entrada segons l'origen triat; href = enllaç o nom del seu fitxer
+  // Languages of an entry according to the chosen source; href = link or name of its file
   function forEntry(videos, href) {
     return source() === "filename" ? fromName(href) : fromVideos(videos);
   }
@@ -627,7 +627,7 @@ var TMM_LANG = (function () {
     try {
       var n = new Intl.DisplayNames([TMM_I18N.getLang()], { type: "language" }).of(code);
       if (n && n.toLowerCase() !== code) return n.charAt(0).toUpperCase() + n.slice(1);
-    } catch (e) { /* navegador antic: es queda el codi */ }
+    } catch (e) { /* old browser: keep the code */ }
     return code.toUpperCase();
   }
 
@@ -639,7 +639,7 @@ var TMM_LANG = (function () {
     var def = customDef(code);
     var parts = code.split("-");
     var base = def && def.flag ? String(def.flag).toLowerCase() : parts[0];
-    // "mark": text curt (p. ex. "LA", "BR") sobre la bandera, per distingir una variant de l'idioma base
+    // "mark": short text (e.g. "LA", "BR") over the flag, to tell a variant from the base language
     var mark = def ? (def.mark ? String(def.mark) : (parts[1] || "")) : "";
     mark = mark.slice(0, 3).toUpperCase();
     if (FLAGS[base]) {
@@ -654,7 +654,7 @@ var TMM_LANG = (function () {
     return el;
   }
 
-  // max = quantes banderes es mostren abans del "+N" (sense max: totes)
+  // max = how many flags are shown before the "+N" (no max: all of them)
   function render(codes, max) {
     var wrap = document.createElement("span");
     wrap.className = "lang-flags";
@@ -671,7 +671,7 @@ var TMM_LANG = (function () {
     return wrap;
   }
 
-  // Al canviar d'idioma de la interfície, es tradueixen els noms dels títols
+  // When the interface language changes, the names in the title tooltips are translated
   document.addEventListener("tmm:langchange", function () {
     Array.prototype.slice.call(document.querySelectorAll(".lang-flag[data-lang]")).forEach(function (el) {
       el.title = name(el.dataset.lang);
@@ -701,15 +701,15 @@ var TMM_ROUTES = (function () {
 
   function dir(key) {
     var cfg = window.TMM_CONFIG && window.TMM_CONFIG.routes;
-    // Sense config.js (o sense "routes"), cada exportació va per lliure: cap enllaç cap a les altres.
+    // Without config.js (or without "routes"), each export stands alone: no links to the others.
     if (!cfg || typeof cfg !== "object") return null;
     var d = Object.prototype.hasOwnProperty.call(cfg, key) ? cfg[key] : DEF[key];
     if (d === null || d === false || d === undefined || d === "") return null;
     return String(d).replace(/^\.?\/+/, "").replace(/\/+$/, "");
   }
 
-  // Enllaç cap a una exportació que no hi és: els botons i xips s'amaguen; els enllaços de
-  // contingut (pòster, títol) es queden com a text, sense poder-hi fer clic.
+  // Link to an export that isn't there: buttons and chips are hidden; content links
+  // (poster, title) stay as plain text that can't be clicked.
   function off(a) {
     if (a.classList.contains("crosslink") || a.classList.contains("chip")) {
       a.style.display = "none";
@@ -723,9 +723,9 @@ var TMM_ROUTES = (function () {
     }
   }
 
-  // La portada (index.html) i les estadístiques (stats.html) són FITXERS a l'arrel, no carpetes, i
-  // s'han d'activar de manera explícita a config.js: routes.home / routes.stats = true (nom per
-  // defecte) o el nom del fitxer. Si no hi són, l'enllaç s'amaga (així no n'hi ha cap de trencat).
+  // The landing page (index.html) and the statistics (stats.html) are FILES at the root, not folders, and
+  // must be switched on explicitly in config.js: routes.home / routes.stats = true (default
+  // name) or the file name. If they are missing, the link is hidden (so no link is ever broken).
   var FILES = { home: "index.html", stats: "stats.html" };
   function file(key) {
     var cfg = window.TMM_CONFIG && window.TMM_CONFIG.routes;
@@ -736,11 +736,11 @@ var TMM_ROUTES = (function () {
     return null;
   }
 
-  // Carpeta d'una col·lecció. Els enllaços la demanen a tMM amb ${movieSet;filename(escape=true)} (tMM 5.3.5 o
-  // posterior, #3369): així coincideix sempre amb la carpeta que crea l'exportador. Això d'aquí és el PLA B per a
-  // versions de tMM anteriors a la 5.3.5, on el títol arriba amb els ":" i la carpeta (5.3.4) els canvia:
-  // "Alien: Romulus Collection" -> "Alien - Romulus Collection". Aplica ': ' -> ' - ' i ':' -> '-', i no fa res si
-  // el nom ja no porta ":". colonInCollectionFolders: "keep" a config.js ho desactiva.
+  // Folder of a collection. The links ask tMM for it with ${movieSet;filename(escape=true)} (tMM 5.3.5 or
+  // later, #3369), so it always matches the folder the exporter creates. This is the FALLBACK for
+  // tMM versions before 5.3.5, where the title arrives with its ":" and the folder (5.3.4) replaces them:
+  // "Alien: Romulus Collection" -> "Alien - Romulus Collection". It applies ': ' -> ' - ' and ':' -> '-', and does nothing if
+  // the name has no ":". colonInCollectionFolders: "keep" in config.js turns it off.
   function setPath(s) {
     var c = window.TMM_CONFIG && window.TMM_CONFIG.colonInCollectionFolders;
     if (c === "keep" || s.indexOf(":") < 0) return s;
@@ -748,7 +748,7 @@ var TMM_ROUTES = (function () {
   }
 
   function apply() {
-    // Llistat de col·leccions: enllaços relatius "./<titol>/movieset.html" (sense data-route)
+    // Collection list: relative links "./<title>/movieset.html" (no data-route)
     Array.prototype.slice.call(document.querySelectorAll("a[href$='/movieset.html']:not([data-route])")).forEach(function (a) {
       var h = a.getAttribute("href") || "";
       if (h.indexOf("./") === 0) a.setAttribute("href", "./" + setPath(h.slice(2)));
@@ -775,32 +775,32 @@ var TMM_ROUTES = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Versions d'un mateix títol. tMM exporta cada versió (Film 1988 / Film 4K,
-   "Bola de Dragón" / "Dragon Ball"...) com una entrada diferent amb el MATEIX
-   ID de scraper (data-vid). Al llistat només en surt una targeta per títol
-   (amb la insígnia ×N) i totes les versions es veuen a la fitxa.
-   Com sap la fitxa quines versions hi ha, si tMM només li passa el seu títol?
-   El llistat les desa al localStorage del navegador (funciona també amb
-   file://) i, quan la pàgina està servida per un servidor web, la fitxa
-   també torna a llegir el llistat per tenir-les sempre fresques.
+   Versions of the same title. tMM exports each version (Film 1988 / Film 4K,
+   "Bola de Dragón" / "Dragon Ball"...) as a separate entry with the SAME
+   scraper ID (data-vid). The list shows only one card per title
+   (with the ×N badge) and all the versions are shown on the detail page.
+   How does the detail page know which versions exist, if tMM only gives it its own title?
+   The list saves them in the browser's localStorage (this works with
+   file:// too) and, when the page is served by a web server, the detail page
+   also re-reads the list so they are always up to date.
    -------------------------------------------------------------------------- */
 var TMM_VERSIONS = (function () {
   "use strict";
 
   var PREFIX = "tmm_versions_";
 
-  // Agrupa les targetes pel data-vid. La representant és la versió sense
-  // edició (si n'hi ha); les altres s'amaguen del llistat.
+  // Groups the cards by data-vid. The representative card is the version without
+  // an edition (if there is one); the others are hidden from the list.
   function hrefOf(card) {
     var a = card.querySelector(".poster-link");
     return a ? a.getAttribute("href") : "";
   }
 
-  // Entrades que apunten a la mateixa pàgina: en queda una (l'última, que és
-  // la que tMM escriu al final i per tant la que de debò hi ha al disc)
-  // prefer(e) (opcional): si dues entrades comparteixen pàgina, es queda la que
-  // la pàgina reconeix com a seva (p. ex. pel nombre d'episodis). e.shared = quantes
-  // entrades de tMM comparteixen aquesta pàgina.
+  // Entries pointing to the same page: only one is kept (the last one, which is
+  // the one tMM writes last and therefore the one actually on disk)
+  // prefer(e) (optional): if two entries share a page, keep the one
+  // the page recognises as its own (e.g. by the number of episodes). e.shared = how many
+  // tMM entries share this page.
   function dedupe(entries, prefer) {
     var groups = [], at = {};
     entries.forEach(function (e) {
@@ -837,13 +837,13 @@ var TMM_VERSIONS = (function () {
       for (var i = 0; i < g.cards.length; i++) {
         if (!g.cards[i].dataset.edition) { rep = g.cards[i]; break; }
       }
-      // si dues entrades comparteixen pàgina, la que de debò hi ha al disc és l'última
+      // if two entries share a page, the one actually on disk is the last one
       for (var j = g.cards.length - 1; j >= 0; j--) {
         if (hrefOf(g.cards[j]) === hrefOf(rep)) { rep = g.cards[j]; break; }
       }
       g.rep = rep;
-      // Pàgines de fitxa DIFERENTS: dues entrades amb el mateix títol i any comparteixen
-      // carpeta a l'export (tMM n'hi desa una sola), i això no són dues versions.
+      // DIFFERENT detail pages: two entries with the same title and year share
+      // a folder in the export (tMM saves only one of them), and those are not two versions.
       var hrefs = {};
       g.pages = 0;
       g.cards.forEach(function (c) {
@@ -861,7 +861,7 @@ var TMM_VERSIONS = (function () {
 
   function rank(res) { return parseInt(res, 10) || 0; }
 
-  // Resolucions diferents del grup, de més a menys
+  // Distinct resolutions in the group, highest first
   function uniqueRes(g) {
     var seen = {}, out = [];
     g.cards.forEach(function (c) {
@@ -871,8 +871,8 @@ var TMM_VERSIONS = (function () {
     return out.sort(function (a, b) { return rank(b) - rank(a); });
   }
 
-  // Insígnies de la targeta representant: qualitat i banderes (només pel·lícules,
-  // withMedia) i ×N si hi ha diverses versions.
+  // Badges on the representative card: quality and flags (movies only,
+  // withMedia) and ×N if there are several versions.
   function decorate(g, withMedia) {
     var card = g.rep, n = g.pages;
     var link = card.querySelector(".poster-link");
@@ -907,7 +907,7 @@ var TMM_VERSIONS = (function () {
       b.textContent = "×" + n;
       b.title = TMM_I18N.t("versionsLabel") + ": " + n;
       link.appendChild(b);
-      // el subtítol "any · edició" només té sentit per a una versió concreta
+      // the "year · edition" subtitle only makes sense for a specific version
       var sub = card.querySelector(".sub");
       if (sub && card.dataset.year) sub.textContent = card.dataset.year;
     }
@@ -926,7 +926,7 @@ var TMM_VERSIONS = (function () {
     };
   }
 
-  // { vid: [entrades] } només dels grups amb més d'una versió
+  // { vid: [entries] } only for groups with more than one version
   function toMap(groups) {
     var map = {};
     groups.forEach(function (g) {
@@ -940,8 +940,8 @@ var TMM_VERSIONS = (function () {
     try { localStorage.setItem(PREFIX + kind, JSON.stringify(toMap(groups))); } catch (e) { /* ignore */ }
   }
 
-  // Crida cb(entrades) amb el que hi ha desat i, si es pot, un cop més amb el
-  // llistat llegit de nou (només funciona servit per http/https).
+  // Calls cb(entries) with what is saved and, if possible, once more with the
+  // freshly read list (only works when served over http/https).
   function lookup(kind, vid, listUrl, cb) {
     try {
       var saved = JSON.parse(localStorage.getItem(PREFIX + kind) || "null");
@@ -963,7 +963,7 @@ var TMM_VERSIONS = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Rejilla: búsqueda, filtros y orden (página de listado)
+   Grid: search, filters and sorting (list page)
    -------------------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -985,7 +985,7 @@ var TMM_VERSIONS = (function () {
   var yearSelect = document.getElementById("yearSelect");
   var langChipsWrap = document.getElementById("langChips");
   var langModeWrap = document.getElementById("langMode");
-  var decadeSelect = document.getElementById("decadeSelect"); // opcional (plantilles antigues: només any)
+  var decadeSelect = document.getElementById("decadeSelect"); // optional (old templates: year only)
   var collectionSelect = document.getElementById("collectionSelect");
   var azBar = document.getElementById("azBar");
   var sortSelect = document.getElementById("sortSelect");
@@ -998,22 +998,22 @@ var TMM_VERSIONS = (function () {
 
   var state = {
     q: "",
-    genres: new Set(),        // gèneres inclosos
-    genresExclude: new Set(), // gèneres vetats
-    genreMode: "and",         // "and" (tots) | "or" (algun)
+    genres: new Set(),        // included genres
+    genresExclude: new Set(), // excluded genres
+    genreMode: "and",         // "and" (all) | "or" (any)
     decade: "", // "1980" = 1980-1989
     year: "",
     quality: "",
-    duration: "",        // "" | minuts màxims ("40"…"130","160") | "160+" | "unknown"
-    multiVersion: false, // només títols amb diverses versions
-    langs: new Set(),    // idiomes d'àudio marcats
-    langMode: "or",      // "or" (algun, per defecte) | "and" (tots alhora)
+    duration: "",        // "" | maximum minutes ("40"…"130","160") | "160+" | "unknown"
+    multiVersion: false, // only titles with several versions
+    langs: new Set(),    // selected audio languages
+    langMode: "or",      // "or" (any, default) | "and" (all at once)
     collection: "",
-    letter: "", // "" (totes) | "A".."Z" | "#" (comença per un número o símbol)
+    letter: "", // "" (all) | "A".."Z" | "#" (starts with a number or symbol)
     person: { kind: "", value: "" } // kind: "" | "actor" | "director" | "studio"
   };
 
-  // ---- Treu accents per poder agrupar "Érase..." sota la E, etc. ----
+  // ---- Strips accents so "Érase..." is grouped under E, etc. ----
   function baseLetter(str) {
     if (!str) return "";
     var stripped = String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -1023,7 +1023,7 @@ var TMM_VERSIONS = (function () {
     return /[0-9]/.test(ch) ? "#" : ch;
   }
 
-  // Resolució del fitxer de vídeo de la targeta ("2160p", "1080p"...)
+  // Resolution of the card's video file ("2160p", "1080p"...)
   function cardQuality(card) {
     return TMM_MEDIA.firstRes(card.dataset.media);
   }
@@ -1033,9 +1033,9 @@ var TMM_VERSIONS = (function () {
     return y > 0 ? Math.floor(y / 10) * 10 : 0;
   }
 
-  var allYears = []; // anys presents (tots els títols), de més nou a més antic
+  var allYears = []; // years present (all titles), newest first
 
-  // Idiomes d'àudio presents: primer ca, es, en; la resta per nombre de títols
+  // Audio languages present: ca, es, en first; the rest by number of titles
   function buildLangChips() {
     if (!langChipsWrap) return;
     var counts = {};
@@ -1098,7 +1098,7 @@ var TMM_VERSIONS = (function () {
     });
   }
 
-  // Idiomes d'àudio d'una versió (en memòria cau)
+  // Audio languages of a version (cached)
   function cardLangs(card) {
     if (!card._langs) {
       var pl = card.querySelector(".poster-link");
@@ -1115,7 +1115,7 @@ var TMM_VERSIONS = (function () {
     return o;
   }
 
-  // Anys del desplegable: només els de la dècada triada (o tots si no n'hi ha)
+  // Years in the dropdown: only those of the chosen decade (or all of them if none is chosen)
   function fillYearOptions() {
     if (!yearSelect) return;
     var keep = state.year;
@@ -1129,10 +1129,10 @@ var TMM_VERSIONS = (function () {
       yearSelect.appendChild(opt);
     });
     yearSelect.value = keep;
-    state.year = yearSelect.value; // "" si l'any ja no encaixa amb la dècada
+    state.year = yearSelect.value; // "" if the year no longer fits the decade
   }
 
-  // ---- Construye las opciones dinámicas a partir de las tarjetas ----
+  // ---- Builds the dynamic options from the cards ----
   function buildOptions() {
     var genreSet = new Set();
     var yearSet = new Set();
@@ -1154,7 +1154,7 @@ var TMM_VERSIONS = (function () {
         chip.textContent = g;
         chip.dataset.genre = g;
         chip.addEventListener("click", function () {
-          // cicle: res -> inclòs -> vetat -> res
+          // cycle: none -> included -> excluded -> none
           if (state.genres.has(g)) {
             state.genres.delete(g); state.genresExclude.add(g);
           } else if (state.genresExclude.has(g)) {
@@ -1171,7 +1171,7 @@ var TMM_VERSIONS = (function () {
 
     allYears = Array.from(yearSet).sort(function (a, b) { return b - a; });
     if (decadeSelect) {
-      // títols (no versions) per dècada
+      // titles (not versions) per decade
       var perDecade = {};
       groups.forEach(function (g) {
         var d = decadeOf(g.rep.dataset.year);
@@ -1189,7 +1189,7 @@ var TMM_VERSIONS = (function () {
     fillYearOptions();
     buildLangChips();
 
-    // Qualitat (resolució del fitxer de vídeo) i versions (mateix ID de scraper repetit)
+    // Quality (video file resolution) and versions (same scraper ID repeated)
     if (qualitySelect) {
       var qSet = new Set();
       cards.forEach(function (card) { var q = cardQuality(card); if (q) qSet.add(q); });
@@ -1204,7 +1204,7 @@ var TMM_VERSIONS = (function () {
         });
       }
     }
-    // Insígnies (qualitat, banderes, ×N) de la targeta representant de cada títol
+    // Badges (quality, flags, ×N) on each title's representative card
     groups.forEach(function (g) { TMM_VERSIONS.decorate(g, kind === "movies"); });
     if (versionsToggle) {
       var multiCount = groups.filter(function (g) { return g.pages > 1; }).length;
@@ -1260,8 +1260,8 @@ var TMM_VERSIONS = (function () {
         azBar.appendChild(btn);
       });
 
-      // En pantalles molt estretes (CSS, <= 560 px) les lletres es canvien per un desplegable d'una línia;
-      // comparteix l'estat (state.letter) i el paràmetre ?letter= amb els botons.
+      // On very narrow screens (CSS, <= 560 px) the letters are replaced by a one-line dropdown;
+      // it shares the state (state.letter) and the ?letter= parameter with the buttons.
       var azSel = document.createElement("select");
       azSel.className = "az-select";
       azSel.setAttribute("aria-label", azBar.getAttribute("aria-label") || "A-Z");
@@ -1283,9 +1283,9 @@ var TMM_VERSIONS = (function () {
       azBar.appendChild(azSel);
     }
 
-    // Estat dels filtres a la URL (?q=, ?genre=, ?xgenre=, ?gmode=, ?year=, ?collection=,
-    // ?letter=, ?sort=). Així el botó "enrere" des d'una fitxa recupera els filtres, i
-    // també serveix per guardar una cerca com a marcador o enllaç.
+    // Filter state in the URL (?q=, ?genre=, ?xgenre=, ?gmode=, ?year=, ?collection=,
+    // ?letter=, ?sort=). That way the "back" button on a detail page restores the filters, and
+    // a search can also be saved as a bookmark or a link.
     var params = new URLSearchParams(window.location.search);
     var openPanel = false;
 
@@ -1298,7 +1298,7 @@ var TMM_VERSIONS = (function () {
     var wantedCollection = params.get("collection");
     if (wantedCollection && collectionSelect) {
       collectionSelect.value = wantedCollection;
-      state.collection = collectionSelect.value; // "" si ja no existeix
+      state.collection = collectionSelect.value; // "" if it no longer exists
       if (state.collection) openPanel = true;
     }
 
@@ -1313,12 +1313,12 @@ var TMM_VERSIONS = (function () {
     var wantedDecade = params.get("decade");
     if (wantedDecade && decadeSelect) {
       decadeSelect.value = wantedDecade;
-      state.decade = decadeSelect.value; // "" si no existeix
+      state.decade = decadeSelect.value; // "" if it doesn't exist
       if (state.decade) { fillYearOptions(); openPanel = true; }
     }
     var wantedYear = params.get("year");
     if (wantedYear && yearSelect) {
-      // un enllaç antic ?year=1988 també fixa la dècada
+      // an old ?year=1988 link also sets the decade
       if (decadeSelect && !state.decade && decadeOf(wantedYear)) {
         decadeSelect.value = String(decadeOf(wantedYear));
         state.decade = decadeSelect.value;
@@ -1354,7 +1354,7 @@ var TMM_VERSIONS = (function () {
     var wantedDuration = params.get("duration");
     if (wantedDuration && durationSelect) {
       durationSelect.value = wantedDuration;
-      state.duration = durationSelect.value; // "" si no és una franja vàlida
+      state.duration = durationSelect.value; // "" if it isn't a valid range
       if (state.duration) openPanel = true;
     }
     if (params.get("versions") === "1" && versionsToggle) {
@@ -1372,7 +1372,7 @@ var TMM_VERSIONS = (function () {
     var wantedSort = params.get("sort");
     if (wantedSort && sortSelect) {
       sortSelect.value = wantedSort;
-      if (sortSelect.value !== wantedSort) sortSelect.value = "title-asc"; // valor desconegut
+      if (sortSelect.value !== wantedSort) sortSelect.value = "title-asc"; // unknown value
       else if (wantedSort !== "title-asc") openPanel = true;
     }
 
@@ -1381,7 +1381,7 @@ var TMM_VERSIONS = (function () {
       if (filterToggle) filterToggle.classList.add("active");
     }
 
-    // ?actor=... / ?director=... / ?studio=... en la URL (venint d'un enllaç de fitxa)
+    // ?actor=... / ?director=... / ?studio=... in the URL (coming from a link on a detail page)
     ["actor", "director", "studio", "tmdb", "imdb"].some(function (kind) {
       var value = params.get(kind);
       if (!value) return false;
@@ -1392,7 +1392,7 @@ var TMM_VERSIONS = (function () {
     renderPersonPill();
   }
 
-  // ---- Pastilla de "filtrant per Actor/Director/Estudi: X" amb botó per treure-la ----
+  // ---- "Filtering by Actor/Director/Studio: X" pill, with a button to remove it ----
   function renderPersonPill() {
     if (!personPill) return;
     if (!state.person.value) { personPill.hidden = true; return; }
@@ -1402,7 +1402,7 @@ var TMM_VERSIONS = (function () {
       : (kind === "tmdb" || kind === "imdb") ? "personFilterVersions"
       : "personFilterStudio";
     var shown = state.person.value;
-    if (kind === "tmdb" || kind === "imdb") { // mostra el títol en lloc de l'ID
+    if (kind === "tmdb" || kind === "imdb") { // shows the title instead of the ID
       var first = cards.find(function (c) { return (c.dataset[kind] || "") === state.person.value; });
       if (first) shown = first.dataset.title;
     }
@@ -1419,7 +1419,7 @@ var TMM_VERSIONS = (function () {
     });
   }
 
-  // ---- Pinta l'estat (inclòs / vetat) dels xips de gènere i del selector I/O ----
+  // ---- Paints the state (included / excluded) of the genre chips and the AND/OR selector ----
   function paintGenreChips() {
     if (genreChipsWrap) {
       Array.prototype.slice.call(genreChipsWrap.querySelectorAll(".chip")).forEach(function (c) {
@@ -1444,7 +1444,7 @@ var TMM_VERSIONS = (function () {
     });
   }
 
-  // ---- Gèneres: inclosos (tots/algun segons I/O) i, a més, cap dels vetats ----
+  // ---- Genres: the included ones (all/any depending on AND/OR) and none of the excluded ones ----
   function matchesGenreFilter(genres) {
     var inc = state.genres, exc = state.genresExclude;
     var okInc = inc.size === 0 || (state.genreMode === "and"
@@ -1454,7 +1454,7 @@ var TMM_VERSIONS = (function () {
     return okInc && okExc;
   }
 
-  // ---- Marca com a actiu el botó de lletra corresponent (o "Tots") ----
+  // ---- Marks the matching letter button (or "All") as active ----
   function setActiveLetterBtn(letter) {
     if (!azBar) return;
     Array.prototype.slice.call(azBar.querySelectorAll(".az-btn")).forEach(function (b) {
@@ -1464,7 +1464,7 @@ var TMM_VERSIONS = (function () {
     if (sel) sel.value = letter || "";
   }
 
-  // ---- Comprova el filtre d'actor/director/estudi (ve d'un enllaç, no d'un control visible) ----
+  // ---- Checks the actor/director/studio filter (it comes from a link, not from a visible control) ----
   function matchesPersonFilter(card) {
     if (!state.person.value) return true;
     var wanted = state.person.value.trim();
@@ -1472,7 +1472,7 @@ var TMM_VERSIONS = (function () {
       return (card.dataset[state.person.kind] || "").trim() === wanted;
     }
     if (state.person.kind === "studio") {
-      // tMM junta les coproductores en un sol camp: "HBO / Warner Bros. / Bad Robot"
+      // tMM puts co-producers in a single field: "HBO / Warner Bros. / Bad Robot"
       var raw = (card.dataset.studio || "").trim();
       if (raw === wanted) return true;
       return raw.split(/\s+\/\s+/).map(function (s) { return s.trim(); }).indexOf(wanted) !== -1;
@@ -1481,7 +1481,7 @@ var TMM_VERSIONS = (function () {
     return (attr || "").split("|").map(function (s) { return s.trim(); }).indexOf(wanted) !== -1;
   }
 
-  // ---- Escriu l'estat actual dels filtres a la URL (sense recarregar ni afegir historial) ----
+  // ---- Writes the current filter state to the URL (no reload, no new history entry) ----
   var syncTimer = null;
   function syncUrl() {
     clearTimeout(syncTimer);
@@ -1507,7 +1507,7 @@ var TMM_VERSIONS = (function () {
     }, 250);
   }
 
-  // ---- Durada: "fins a X minuts" (acumulatiu), "més de 160" o "desconeguda". Sense durada no encaixa a cap franja ----
+  // ---- Duration: "up to X minutes" (cumulative), "over 160" or "unknown". Without a duration it fits no range ----
   function matchesDuration(card) {
     if (!state.duration) return true;
     var rt = parseInt(card.dataset.runtime, 10);
@@ -1517,7 +1517,7 @@ var TMM_VERSIONS = (function () {
     return rt <= parseInt(state.duration, 10);
   }
 
-  // ---- ¿Cumple esta versión (tarjeta) todos los filtros? ----
+  // ---- Does this version (card) pass every filter? ----
   function cardMatches(card, q) {
     var title = (card.dataset.title || "").toLowerCase();
     var name = (card.dataset.name || "").toLowerCase();
@@ -1541,9 +1541,9 @@ var TMM_VERSIONS = (function () {
       (!state.multiVersion || card.dataset.multi === "1");
   }
 
-  // ---- Aplica todos los filtros a la vez ----
-  // Un título (grupo de versiones) se muestra si ALGUNA de sus versiones cumple
-  // los filtros; en el listado siempre sale la tarjeta representante.
+  // ---- Applies all the filters at once ----
+  // A title (group of versions) is shown if ANY of its versions passes
+  // the filters; the list always shows the representative card.
   function applyFilters() {
     var q = state.q.trim().toLowerCase();
     var visible = 0;
@@ -1559,7 +1559,7 @@ var TMM_VERSIONS = (function () {
     syncUrl();
   }
 
-  // ---- Orden ----
+  // ---- Sorting ----
   function applySort() {
     if (!sortSelect) return;
     var mode = sortSelect.value;
@@ -1590,7 +1590,7 @@ var TMM_VERSIONS = (function () {
   if (decadeSelect) {
     decadeSelect.addEventListener("change", function () {
       state.decade = decadeSelect.value;
-      fillYearOptions(); // si l'any triat és d'una altra dècada, es buida
+      fillYearOptions(); // if the chosen year belongs to another decade, clear it
       applyFilters();
     });
   }
@@ -1598,7 +1598,7 @@ var TMM_VERSIONS = (function () {
   if (yearSelect) {
     yearSelect.addEventListener("change", function () {
       state.year = yearSelect.value;
-      // triar un any sense dècada fixa també la seva dècada
+      // choosing a year with no decade selected also selects its decade
       if (state.year && decadeSelect && !state.decade) {
         state.decade = String(decadeOf(state.year));
         decadeSelect.value = state.decade;
@@ -1610,7 +1610,7 @@ var TMM_VERSIONS = (function () {
   }
 
   if (durationSelect) {
-    // Sense cap durada a l'export, el grup no serveix de res
+    // With no durations in the export, the group is useless
     if (!cards.some(function (c) { return parseInt(c.dataset.runtime, 10) > 0; })) {
       durationSelect.closest(".filter-group").style.display = "none";
     }
@@ -1672,14 +1672,14 @@ var TMM_VERSIONS = (function () {
   TMM_VERSIONS.save(kind, groups);
   buildOptions();
   applyFilters();
-  applySort(); // aplica l'ordre per defecte del desplegable (abans només s'ordenava en canviar-lo a mà)
+  applySort(); // applies the dropdown's default order (before, it only sorted when changed by hand)
 })();
 
 /* --------------------------------------------------------------------------
-   Recorta la coma sobrant al final de listas construidas con foreach
-   (p. ej. el campo Director, que añade ", " tras cada nombre). Solo toca
-   el ÚLTIMO nodo de texto (el ", " final), sin tocar los <a> de dentro
-   -ahora que cada nombre es un enlace clicable-, para no destruirlos.
+   Trims the leftover comma at the end of lists built with foreach
+   (e.g. the Director field, which adds ", " after each name). It only touches
+   the LAST text node (the trailing ", "), leaving the <a> elements inside
+   alone -now that each name is a clickable link- so they are not destroyed.
    -------------------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -1692,9 +1692,9 @@ var TMM_VERSIONS = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Estudis: tMM els dona en un sol text separat per " / " (coproduccions).
-   Aquí es parteix en un enllaç per estudi, cadascun filtrant el llistat
-   pel seu nom (?studio=...), perquè Westworld surti sota HBO, Bad Robot...
+   Studios: tMM gives them as a single text separated by " / " (co-productions).
+   Here it is split into one link per studio, each one filtering the list
+   by its name (?studio=...), so Westworld shows up under HBO, Bad Robot...
    -------------------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -1715,10 +1715,10 @@ var TMM_VERSIONS = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Botó "enrere" de les fitxes: torna d'on venies de debò (llistat amb els
-   seus filtres, una col·lecció, la fitxa d'un altre títol...). Si la fitxa
-   s'ha obert sola en una pestanya nova (no hi ha historial), cau a l'enllaç
-   normal cap al llistat.
+   "Back" button on detail pages: goes back to where you actually came from (the list with
+   its filters, a collection, another title's page...). If the page was
+   opened on its own in a new tab (no history), it falls back to the
+   normal link to the list.
    -------------------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -1733,9 +1733,9 @@ var TMM_VERSIONS = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Fitxa de pel·lícula: omple Vídeo / Àudio / Mida i la píndola de resolució a
-   partir de les dades del fitxer de vídeo (.media-data). Si no n'hi ha
-   (p. ex. pel·lícula sense informació del fitxer), amaga aquestes files.
+   Movie detail page: fills in Video / Audio / Size and the resolution pill from
+   the video file data (.media-data). If there is none
+   (e.g. a movie without file information), these rows are hidden.
    -------------------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -1810,8 +1810,8 @@ var TMM_VERSIONS = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Fitxa: llista de versions del mateix títol (#versionsBox). Si el títol té
-   una sola versió, o no se'n coneixen les altres, la caixa queda amagada.
+   Detail page: list of versions of the same title (#versionsBox). If the title has
+   a single version, or the others are unknown, the box stays hidden.
    -------------------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -1845,7 +1845,7 @@ var TMM_VERSIONS = (function () {
 
   function render() {
     box.textContent = "";
-    // enllaç ràpid a la caixa, al costat de la resolució/durada de la capçalera
+    // quick link to the box, next to the resolution/duration in the header
     var row = document.querySelector(".badge-row");
     var oldJump = row && row.querySelector(".versions-jump");
     if (oldJump) oldJump.parentNode.removeChild(oldJump);
@@ -1934,7 +1934,7 @@ var TMM_VERSIONS = (function () {
     box.hidden = false;
   }
 
-  // episodis que té ESTA pàgina (per saber quina de dues entrades amb el mateix nom és la seva)
+  // episodes on THIS page (to know which of two entries with the same name is its own)
   var ownEpisodes = document.querySelectorAll(".episode").length;
   function mine(e) { return kind === "tvshows" && ownEpisodes > 0 && parseInt(e.episodes, 10) === ownEpisodes; }
 
@@ -1943,10 +1943,10 @@ var TMM_VERSIONS = (function () {
 })();
 
 /* --------------------------------------------------------------------------
-   Ordena per any les pel·lícules de dins d'UNA col·lecció (fitxa de
-   col·lecció). Independent del bloc de llistat de dalt (aquell busca
-   #grid i aquí fem servir #moviesGrid expressament perquè no es trepitgin
-   -aquesta graella no té cap desplegable, sempre ordre cronològic-.
+   Sorts the movies inside ONE collection by year (collection
+   detail page). Independent of the list block above (that one looks for
+   #grid, and here we use #moviesGrid on purpose so they don't clash
+   -this grid has no dropdown, it is always in chronological order-).
    -------------------------------------------------------------------------- */
 (function () {
   "use strict";
@@ -1966,17 +1966,17 @@ var TMM_VERSIONS = (function () {
   });
   sorted.forEach(function (card) { moviesGrid.appendChild(card); });
 
-  // Una sola targeta per pel·lícula (les versions es veuen a la seva fitxa),
-  // amb la insígnia de resolució i les banderes d'idioma
+  // A single card per movie (the versions are shown on its detail page),
+  // with the resolution badge and the language flags
   TMM_VERSIONS.group(cards).forEach(function (g) { TMM_VERSIONS.decorate(g, true); });
 })();
 
 /* ==========================================================================
-   Agrupación de episodios por temporada (página de detalle de serie)
-   El .jmte deja todos los episodios planos dentro de #episodesFlat con
-   data-season en cada uno; aquí se reagrupan en bloques plegables por
-   temporada. Hacerlo en JS evita depender de si JMTE sabe agrupar listas.
-   Las etiquetas se re-renderizan al cambiar de idioma (evento tmm:langchange).
+   Episodes grouped by season (TV show detail page)
+   The .jmte puts all the episodes flat inside #episodesFlat, with
+   data-season on each one; here they are regrouped into collapsible blocks per
+   season. Doing it in JS avoids depending on whether JMTE can group lists.
+   Labels are re-rendered when the language changes (tmm:langchange event).
    ========================================================================== */
 (function () {
   "use strict";

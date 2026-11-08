@@ -1,7 +1,7 @@
 /* ==========================================================================
-   Modern Dark Grid — plantilla d'exportació per a tinyMediaManager
-   Un sol full d'estils compartit entre la plantilla de Pel·lícules i la de
-   Sèries. Es copia literalment a cada carpeta de plantilla.
+   Modern Dark Grid — export template for tinyMediaManager
+   A single stylesheet shared by the Movies and TV Shows templates.
+   It is copied verbatim into each template folder.
    ========================================================================== */
 
 :root {
@@ -37,8 +37,8 @@
   color-scheme: dark;
 }
 
-/* Tema clar (crema + ambre). Segueix el sistema (prefers-color-scheme) i el botó sol/lluna de la
-   capçalera el pot forçar: <html data-theme="light|dark">. Sense JS el tema continua seguint el sistema. */
+/* Light theme (cream + amber). It follows the system (prefers-color-scheme) and the sun/moon button in the
+   header can force it: <html data-theme="light|dark">. Without JS the theme keeps following the system. */
 :root[data-theme="light"] {
   --bg: #f6f1e7;
   --bg-elev: #fbf8f1;
@@ -122,7 +122,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* -------------------------------------------------------------------------
-   Capçalera / barra de cerca i filtres
+   Header / search bar and filters
    ------------------------------------------------------------------------- */
 
 .topbar {
@@ -282,10 +282,10 @@ img { max-width: 100%; display: block; }
   user-select: none;
 }
 .chip.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-/* Gènere vetat (segon clic): vermell i ratllat */
+/* Excluded genre (second click): red and struck through */
 .chip.excluded { background: rgba(233,69,96,.15); border-color: var(--warn); color: var(--warn); text-decoration: line-through; }
 
-/* Selector I / O dels gèneres */
+/* Genre AND / OR selector */
 .genre-mode { display: inline-flex; align-self: flex-start; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
 .genre-mode button {
   border: 0; background: var(--bg-elev); color: var(--text-dim);
@@ -320,7 +320,7 @@ img { max-width: 100%; display: block; }
 .az-btn:hover { border-color: var(--accent); color: var(--accent); }
 .az-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-/* Pantalles molt estretes: les lletres es converteixen en un desplegable d'una línia */
+/* Very narrow screens: the letters turn into a one-line dropdown */
 .az-select {
   display: none;
   height: 2.2rem;
@@ -348,7 +348,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* -------------------------------------------------------------------------
-   Graella de targetes
+   Card grid
    ------------------------------------------------------------------------- */
 
 .grid {
@@ -370,9 +370,9 @@ img { max-width: 100%; display: block; }
 }
 .empty-state.show { display: block; }
 
-/* Pastilla "filtrant per Actor/Director/Estudi: X" (no s'usa en aquesta
-   plantilla de Col·leccions, però es manté el mateix CSS que a Películas
-   i Series per si en el futur cal reutilitzar-la aquí). */
+/* "Filtering by Actor/Director/Studio: X" pill (not used in this
+   Collections template, but the CSS is kept the same as in Movies
+   and TV Shows in case it is reused here in the future). */
 .active-filter-pill {
   max-width: var(--maxw);
   margin: 0 auto;
@@ -420,8 +420,8 @@ img { max-width: 100%; display: block; }
 .card .poster-link { display: block; position: relative; aspect-ratio: 2 / 3; background: var(--bg-elev); }
 .card .poster-link img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Pila d'imatges: només es veu la primera (fem servir la portada de la
-   primera pel·lícula d'una col·lecció com a miniatura representativa). */
+/* Image stack: only the first one is visible (the poster of the
+   first movie of a collection is used as its thumbnail). */
 .poster-stack { position: absolute; inset: 0; }
 .poster-stack img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .poster-stack img:not(:first-child) { display: none; }
@@ -438,7 +438,7 @@ img { max-width: 100%; display: block; }
 .badge.quality { bottom: .5rem; left: .5rem; background: rgba(0,0,0,.7); color: var(--on-media); white-space: nowrap; }
 .badge.versions { top: .5rem; left: .5rem; background: var(--accent); color: var(--accent-ink); }
 
-/* Banderes d'idioma (cercles) */
+/* Language flags (circles) */
 .lang-flags { display: inline-flex; gap: .25rem; align-items: center; }
 .poster-link > .lang-flags { position: absolute; top: .5rem; right: .5rem; z-index: 2; }
 .lang-flag {
@@ -491,7 +491,7 @@ img { max-width: 100%; display: block; }
 .card .meta .sub { font-size: .76rem; color: var(--text-dim); }
 
 /* -------------------------------------------------------------------------
-   Pàgina de detall
+   Detail page
    ------------------------------------------------------------------------- */
 
 .hero {
@@ -524,7 +524,7 @@ img { max-width: 100%; display: block; }
 }
 .back-btn svg { width: 1.1rem; height: 1.1rem; fill: var(--text); }
 
-/* Enllaços a la portada i a les estadístiques (només si config.js els activa) */
+/* Links to the landing page and the statistics (only if config.js enables them) */
 .hero-links { position: absolute; top: 1rem; left: 3.9rem; z-index: 5; display: flex; gap: .4rem; }
 .hero-links .crosslink {
   background: var(--glass); border-color: transparent; color: var(--text);
@@ -646,7 +646,7 @@ footer.site-footer {
   .episode .ep-thumb { width: 96px; }
 }
 
-/* Versions del mateix títol (fitxa) */
+/* Versions of the same title (detail page) */
 .versions-box { margin: 1.2rem 0 0; }
 .versions-box[hidden] { display: none; }
 .version-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
@@ -669,8 +669,8 @@ footer.site-footer {
 .lang-chip small { color: var(--text-faint); font-size: .7rem; }
 .lang-chip.active small { color: inherit; }
 
-/* La fitxa té una capçalera cinematogràfica sobre el fanart: es queda FOSCA també en tema clar (el text blanc
-   sobre una foto qualsevol és l'únic que sempre es llegeix). Al final s'esvaeix cap al color de la pàgina. */
+/* The detail page has a cinematic header over the fanart: it stays DARK in the light theme too (white text
+   over any photo is the only thing that is always readable). At the bottom it fades into the page colour. */
 .hero {
   --bg-elev: #131318; --card: #1b1b22; --card-hover: #232330;
   --text: #ececed; --text-dim: #b4b4be; --text-faint: #8a8a96;
@@ -689,7 +689,7 @@ footer.site-footer {
   }
 }
 
-/* Botó de tema sol/lluna (dins del selector d'idioma) */
+/* Sun/moon theme button (inside the language selector) */
 .theme-toggle { display: inline-flex; align-items: center; justify-content: center; }
 .theme-toggle svg { width: 1.45em; height: 1.45em; display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .theme-toggle .i-sun { display: none; }
