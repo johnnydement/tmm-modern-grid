@@ -13,6 +13,67 @@ Every release listed here has been tested by me on real exports of my own librar
 
 ---
 
+## [0.27.0] — Light theme and sun/moon toggle
+
+### Added
+- **Light theme** (warm cream with a deep amber accent) for the list pages, detail pages, the landing page and the statistics page.
+  It follows the system setting by default (`prefers-color-scheme`, so it works even without JavaScript), and a **sun/moon button** inside the
+  language switcher overrides it. The override is remembered in `localStorage` (`tmm_theme`), synced between tabs, and going back to the
+  system's theme removes it instead of pinning it. The detail page keeps its dark cinematic header in both themes, so text over any fanart stays readable.
+- Every hard-coded colour in the stylesheets became a variable, which is what made this possible.
+
+### Changed
+- If your device is set to light mode, the pages now open in light mode. If you prefer them dark regardless, press the moon/sun once and it sticks.
+
+No re-export needed: copy `app.js` and `style.css` into the three export folders, and `index.html` and `stats.html` into the root.
+The button is added by `app.js`; one thing that cannot be avoided without a re-export is a brief flash of the system theme before a pinned
+override is applied.
+
+---
+
+## [0.26.1] — Collection links use tMM's own folder name
+
+### Fixed
+- Links to collections (list cards, and the collection chip on a movie page) used the raw title, but tMM exports each collection to a sanitized
+  folder: `Alien: Romulus Collection` became `Alien - Romulus Collection` (tMM 5.3.4, #3369), so the links ended in a 404. I mentioned it
+  in the issue, suggested exposing the folder name to templates instead of altering the stored data, and Manuel added it (tMM 5.3.5):
+  the `filename` renderer now also works on collections. The templates use `${movieSet;filename(escape=true)}` and
+  `${movie.movieSet;filename(escape=true)}`, so list, folder and chip always agree, including `/` and `\` in titles.
+- Verified on my own library with tMM 5.3.5: `Alien: Romulus Collection` → `Alien - Romulus Collection`, `V/H/S - Colección` → `V H S - Colección`,
+  `Superman / Batman (Animación) Colección` → `Superman Batman (Animación) Colección`, and the links lead to each of them.
+- Fallback for tMM versions older than 5.3.5: the title is used and `app.js` replaces `: ` with ` - ` (`colonInCollectionFolders: "keep"`
+  in `config.js` turns it off).
+
+Needs a re-export of the collections (list) and the movies (chip), plus the new `app.js` and `config.js`.
+
+---
+
+## [0.26.0] — Statistics navigation, Basque and Galician flags
+
+### Added
+- **Statistics page links** to Movies, TV shows and Collections next to the "Home" link, following the folders in `config.js`
+  (a section you set to `null` or `""` simply doesn't get a link). Only `stats.html` changes.
+- **Basque (`eu`) and Galician (`gl`) flags** (ikurriña and the Galician flag), built into `app.js`. Only `app.js` changes.
+
+### Documented
+- Why a collection called `Superman / Batman` stopped my collections export on Windows (the `/` becomes a sub-folder named
+  `Superman ` with a trailing space, which Windows refuses) and why that also leaves the export without `app.js` and `style.css`.
+  The fix is renaming the collection in tMM; nothing in a template can change how tMM names its folders.
+
+No re-export needed for either change: copy `app.js` into the three export folders and replace `stats.html` in the root.
+
+---
+
+## [0.25.1] — A–Z bar becomes a dropdown on very narrow screens
+
+### Changed
+- On screens up to 560 px wide (phones) the A–Z letter bar, which took two or three rows, is replaced by a one-line
+  dropdown ("A–Z", then only the letters that exist). It shares its state with the buttons and the `?letter=` URL
+  parameter, so links keep working. On wider screens nothing changes. Only `app.js` and `style.css` are touched: no
+  re-export needed, copy those two files into your existing export folders.
+
+---
+
 ## [0.25.0] — Home and Statistics links on every page
 
 ### Added

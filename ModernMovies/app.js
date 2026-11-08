@@ -24,6 +24,8 @@ var TMM_I18N = (function () {
       toCollections: "Col·leccions →",
       toHome: "⌂ Inici",
       toStats: "Estadístiques",
+      themeToLight: "Canvia al tema clar",
+      themeToDark: "Canvia al tema fosc",
       searchPlaceholder: "Cerca per títol, any o gènere…",
       filterToggle: "Filtres ▾",
       genre: "Gènere",
@@ -110,6 +112,8 @@ var TMM_I18N = (function () {
       toCollections: "Colecciones →",
       toHome: "⌂ Inicio",
       toStats: "Estadísticas",
+      themeToLight: "Cambiar al tema claro",
+      themeToDark: "Cambiar al tema oscuro",
       searchPlaceholder: "Buscar por título, año o género…",
       filterToggle: "Filtros ▾",
       genre: "Género",
@@ -196,6 +200,8 @@ var TMM_I18N = (function () {
       toCollections: "Collections →",
       toHome: "⌂ Home",
       toStats: "Statistics",
+      themeToLight: "Switch to light theme",
+      themeToDark: "Switch to dark theme",
       searchPlaceholder: "Search by title, year or genre…",
       filterToggle: "Filters ▾",
       genre: "Genre",
@@ -314,7 +320,7 @@ var TMM_I18N = (function () {
     });
 
     Array.prototype.slice.call(document.querySelectorAll("#langSwitcher")).forEach(function (switcher) {
-      Array.prototype.slice.call(switcher.querySelectorAll("button")).forEach(function (b) {
+      Array.prototype.slice.call(switcher.querySelectorAll("button[data-lang]")).forEach(function (b) {
         b.classList.toggle("active", b.getAttribute("data-lang") === lang);
       });
     });
@@ -324,7 +330,7 @@ var TMM_I18N = (function () {
 
   function wireSwitchers() {
     Array.prototype.slice.call(document.querySelectorAll("#langSwitcher")).forEach(function (switcher) {
-      Array.prototype.slice.call(switcher.querySelectorAll("button")).forEach(function (b) {
+      Array.prototype.slice.call(switcher.querySelectorAll("button[data-lang]")).forEach(function (b) {
         b.addEventListener("click", function () {
           setLang(b.getAttribute("data-lang"));
           apply();
@@ -337,6 +343,81 @@ var TMM_I18N = (function () {
   wireSwitchers();
 
   return { t: t, getLang: getLang, setLang: setLang, apply: apply };
+})();
+
+/* --------------------------------------------------------------------------
+   Tema clar / fosc. Per defecte segueix el sistema (CSS: prefers-color-scheme, sense JS). El botó sol/lluna
+   (afegit a cada #langSwitcher) pot forçar l'altre tema: es guarda a localStorage ("light" | "dark") i
+   s'aplica com <html data-theme>. Si l'usuari torna al tema del sistema, el valor es BORRA (no es fixa res).
+   No es mira mai si el sistema "coincideix" amb el valor guardat: molts sistemes canvien sols de dia a nit.
+   -------------------------------------------------------------------------- */
+var TMM_THEME = (function () {
+  "use strict";
+
+  var KEY = "tmm_theme";
+  var root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+  var SVG = {
+    moon: '<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>',
+    sun: '<svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+  };
+
+  function read() {
+    try { var v = localStorage.getItem(KEY); return v === "light" || v === "dark" ? v : null; } catch (e) { return null; }
+  }
+  function write(v) {
+    try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); } catch (e) { /* sense emmagatzematge: l'efecte dura només aquesta pàgina */ }
+  }
+  var override = read();
+
+  function system() { return mq && mq.matches ? "light" : "dark"; }
+  function current() { return override || system(); }
+  function paint() {
+    if (override) root.setAttribute("data-theme", override); else root.removeAttribute("data-theme");
+  }
+
+  function label() {
+    return TMM_I18N.t(current() === "dark" ? "themeToLight" : "themeToDark");
+  }
+  function refresh() {
+    var txt = label();
+    Array.prototype.slice.call(document.querySelectorAll(".theme-toggle")).forEach(function (b) {
+      b.setAttribute("aria-label", txt);
+      b.setAttribute("title", txt);
+    });
+  }
+
+  function toggle() {
+    var target = current() === "dark" ? "light" : "dark";
+    // Si el destí és el del sistema, l'usuari desfà el seu ajust: s'esborra, no es fixa.
+    override = target === system() ? null : target;
+    write(override);
+    paint();
+    refresh();
+  }
+
+  function build() {
+    Array.prototype.slice.call(document.querySelectorAll("#langSwitcher")).forEach(function (sw) {
+      if (sw.querySelector(".theme-toggle")) return;
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "theme-toggle";
+      b.innerHTML = SVG.moon + SVG.sun;
+      b.addEventListener("click", toggle);
+      sw.appendChild(b);
+    });
+    refresh();
+  }
+
+  paint();
+  build();
+  document.addEventListener("tmm:langchange", refresh);
+  if (mq && mq.addEventListener) mq.addEventListener("change", refresh);
+  window.addEventListener("storage", function (e) {
+    if (e.key === KEY || e.key === null) { override = read(); paint(); refresh(); }
+  });
+
+  return { current: current, toggle: toggle };
 })();
 
 /* --------------------------------------------------------------------------
@@ -426,7 +507,9 @@ var TMM_LANG = (function () {
     nl: '<rect width="60" height="13.4" fill="#ae1c28"/><rect y="13.3" width="60" height="13.4" fill="#fff"/><rect y="26.6" width="60" height="13.4" fill="#21468b"/>',
     pl: '<rect width="60" height="20" fill="#fff"/><rect y="20" width="60" height="20" fill="#dc143c"/>',
     sv: '<rect width="60" height="40" fill="#006aa7"/><path d="M0,20H60M22,0V40" stroke="#fecc00" stroke-width="8"/>',
-    tr: '<rect width="60" height="40" fill="#e30a17"/><circle cx="22" cy="20" r="10" fill="#fff"/><circle cx="25" cy="20" r="8" fill="#e30a17"/><polygon fill="#fff" points="38.0,16.5 38.8,18.9 41.3,18.9 39.3,20.4 40.1,22.8 38.0,21.4 35.9,22.8 36.7,20.4 34.7,18.9 37.2,18.9"/>'
+    tr: '<rect width="60" height="40" fill="#e30a17"/><circle cx="22" cy="20" r="10" fill="#fff"/><circle cx="25" cy="20" r="8" fill="#e30a17"/><polygon fill="#fff" points="38.0,16.5 38.8,18.9 41.3,18.9 39.3,20.4 40.1,22.8 38.0,21.4 35.9,22.8 36.7,20.4 34.7,18.9 37.2,18.9"/>',
+    eu: '<rect width="60" height="40" fill="#d52b1e"/><path d="M0,0L60,40M60,0L0,40" stroke="#009b48" stroke-width="4"/><path d="M30,0V40M0,20H60" stroke="#fff" stroke-width="5"/>',
+    gl: '<rect width="60" height="40" fill="#fff"/><path d="M0,0L60,40" stroke="#0a6fb5" stroke-width="9"/>'
   };
 
   // Codis propis definits a config.js (languageCodes). Tenen prioritat sobre l'estàndard:
@@ -653,7 +736,23 @@ var TMM_ROUTES = (function () {
     return null;
   }
 
+  // Carpeta d'una col·lecció. Els enllaços la demanen a tMM amb ${movieSet;filename(escape=true)} (tMM 5.3.5 o
+  // posterior, #3369): així coincideix sempre amb la carpeta que crea l'exportador. Això d'aquí és el PLA B per a
+  // versions de tMM anteriors a la 5.3.5, on el títol arriba amb els ":" i la carpeta (5.3.4) els canvia:
+  // "Alien: Romulus Collection" -> "Alien - Romulus Collection". Aplica ': ' -> ' - ' i ':' -> '-', i no fa res si
+  // el nom ja no porta ":". colonInCollectionFolders: "keep" a config.js ho desactiva.
+  function setPath(s) {
+    var c = window.TMM_CONFIG && window.TMM_CONFIG.colonInCollectionFolders;
+    if (c === "keep" || s.indexOf(":") < 0) return s;
+    return s.replace(/:\s+/g, " - ").replace(/:/g, "-");
+  }
+
   function apply() {
+    // Llistat de col·leccions: enllaços relatius "./<titol>/movieset.html" (sense data-route)
+    Array.prototype.slice.call(document.querySelectorAll("a[href$='/movieset.html']:not([data-route])")).forEach(function (a) {
+      var h = a.getAttribute("href") || "";
+      if (h.indexOf("./") === 0) a.setAttribute("href", "./" + setPath(h.slice(2)));
+    });
     Array.prototype.slice.call(document.querySelectorAll("a[data-route]")).forEach(function (a) {
       var key = a.getAttribute("data-route");
       var root = a.getAttribute("data-root") || "";
@@ -665,7 +764,9 @@ var TMM_ROUTES = (function () {
       }
       var d = dir(key);
       if (d === null) { off(a); return; }
-      a.setAttribute("href", root + d + "/" + (a.getAttribute("data-rest") || ""));
+      var rest = a.getAttribute("data-rest") || "";
+      if (key === "collections" && /\/movieset\.html$/.test(rest)) rest = setPath(rest);
+      a.setAttribute("href", root + d + "/" + rest);
     });
   }
 
@@ -1158,6 +1259,28 @@ var TMM_VERSIONS = (function () {
         });
         azBar.appendChild(btn);
       });
+
+      // En pantalles molt estretes (CSS, <= 560 px) les lletres es canvien per un desplegable d'una línia;
+      // comparteix l'estat (state.letter) i el paràmetre ?letter= amb els botons.
+      var azSel = document.createElement("select");
+      azSel.className = "az-select";
+      azSel.setAttribute("aria-label", azBar.getAttribute("aria-label") || "A-Z");
+      var opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "A\u2013Z";
+      azSel.appendChild(opt0);
+      order.forEach(function (l) {
+        var op = document.createElement("option");
+        op.value = l;
+        op.textContent = l;
+        azSel.appendChild(op);
+      });
+      azSel.addEventListener("change", function () {
+        state.letter = azSel.value;
+        setActiveLetterBtn(state.letter || null);
+        applyFilters();
+      });
+      azBar.appendChild(azSel);
     }
 
     // Estat dels filtres a la URL (?q=, ?genre=, ?xgenre=, ?gmode=, ?year=, ?collection=,
@@ -1337,6 +1460,8 @@ var TMM_VERSIONS = (function () {
     Array.prototype.slice.call(azBar.querySelectorAll(".az-btn")).forEach(function (b) {
       b.classList.toggle("active", letter ? b.dataset.letter === letter : !b.dataset.letter);
     });
+    var sel = azBar.querySelector(".az-select");
+    if (sel) sel.value = letter || "";
   }
 
   // ---- Comprova el filtre d'actor/director/estudi (ve d'un enllaç, no d'un control visible) ----

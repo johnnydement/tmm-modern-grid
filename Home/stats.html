@@ -23,13 +23,82 @@
   --radius: 12px;
   --maxw: 1100px;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bg-rgb: 11, 11, 14;
+  --line: #2a2a34;
+  --line-2: #23232c;
+  --line-3: #1c1c24;
+  --accent-ink: #1a1205;
+  --glass: rgba(0, 0, 0, .55);
+  --hair: rgba(255, 255, 255, .08);
+  --hover: rgba(255, 255, 255, .04);
+  --on-media: #ececed;
+  --on-media-dim: #b4b4be;
+  --warn-text: #e0a070;
+  --bg-glow: #16161d;
+  color-scheme: dark;
+}
+
+/* Tema clar (crema + ambre). Segueix el sistema (prefers-color-scheme) i el botó sol/lluna de la
+   capçalera el pot forçar: <html data-theme="light|dark">. Sense JS el tema continua seguint el sistema. */
+:root[data-theme="light"] {
+  --bg: #f6f1e7;
+  --bg-elev: #fbf8f1;
+  --card: #ffffff;
+  --card-hover: #fffaf0;
+  --text: #1f1c17;
+  --text-dim: #5d574b;
+  --text-faint: #716b5e;
+  --accent: #a35c00;
+  --accent-dim: #f1dcb4;
+  --ok: #0f7a54;
+  --warn: #c4203d;
+  --shadow: 0 8px 24px rgba(70, 50, 20, .14);
+  --bg-rgb: 246, 241, 231;
+  --line: #e1d8c6;
+  --line-2: #ebe3d3;
+  --line-3: #f0eadc;
+  --accent-ink: #ffffff;
+  --glass: rgba(255, 255, 255, .72);
+  --hair: rgba(0, 0, 0, .08);
+  --hover: rgba(0, 0, 0, .05);
+  --warn-text: #a0551a;
+  color-scheme: light;
+  --bg-glow: #fffaf0;
+  --grid: #e1d8c6;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f6f1e7;
+    --bg-elev: #fbf8f1;
+    --card: #ffffff;
+    --card-hover: #fffaf0;
+    --text: #1f1c17;
+    --text-dim: #5d574b;
+    --text-faint: #716b5e;
+    --accent: #a35c00;
+    --accent-dim: #f1dcb4;
+    --ok: #0f7a54;
+    --warn: #c4203d;
+    --shadow: 0 8px 24px rgba(70, 50, 20, .14);
+    --bg-rgb: 246, 241, 231;
+    --line: #e1d8c6;
+    --line-2: #ebe3d3;
+    --line-3: #f0eadc;
+    --accent-ink: #ffffff;
+    --glass: rgba(255, 255, 255, .72);
+    --hair: rgba(0, 0, 0, .08);
+    --hover: rgba(0, 0, 0, .05);
+    --warn-text: #a0551a;
+    color-scheme: light;
+  --bg-glow: #fffaf0;
+    --grid: #e1d8c6;
+  }
 }
 * { box-sizing: border-box; }
-html { color-scheme: dark; }
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(ellipse at top, #16161d 0%, var(--bg) 60%);
+  background: radial-gradient(ellipse at top, var(--bg-glow) 0%, var(--bg) 60%);
   color: var(--text);
   font-family: var(--font);
   font-size: 15px;
@@ -45,9 +114,10 @@ a { color: inherit; text-decoration: none; }
   border: 0; background: transparent; color: var(--text-dim); font-size: .72rem; font-weight: 700;
   padding: .3rem .6rem; border-radius: 999px; cursor: pointer;
 }
-.lang-switcher button.active { background: var(--accent); color: #1a1205; }
+.lang-switcher button.active { background: var(--accent); color: var(--accent-ink); }
 
 main { max-width: var(--maxw); margin: 0 auto; padding: 4.2rem 1.5rem 3rem; }
+.navbar { display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; }
 .back { color: var(--text-dim); font-size: .85rem; }
 .back:hover { color: var(--accent); }
 h1 { margin: .6rem 0 .3rem; font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
@@ -83,7 +153,7 @@ h1 { margin: .6rem 0 .3rem; font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
 /* barras horizontales */
 .hbars { display: flex; flex-direction: column; gap: .5rem; }
 .hrow { display: grid; grid-template-columns: minmax(70px, 28%) 1fr; align-items: center; gap: .7rem; border-radius: 6px; padding: .12rem 0; }
-.hrow:hover, .hrow:focus-visible { background: rgba(255, 255, 255, .04); outline: none; }
+.hrow:hover, .hrow:focus-visible { background: var(--hover); outline: none; }
 .hlabel { font-size: .8rem; color: var(--text-dim); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .htrack { position: relative; display: flex; flex-direction: column; gap: 2px; justify-content: center; min-height: 14px; }
 .hbar { height: 14px; border-radius: 0 4px 4px 0; min-width: 2px; position: relative; }
@@ -100,7 +170,7 @@ h1 { margin: .6rem 0 .3rem; font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
 .cols .gl span { position: absolute; left: -2.6rem; width: 2.2rem; text-align: right; top: -.55rem; font-size: .68rem; color: var(--text-faint); }
 .cols .plot { position: absolute; inset: 0; display: flex; align-items: flex-end; }
 .cslot { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; border-radius: 6px; cursor: default; }
-.cslot:hover, .cslot:focus-visible { background: rgba(255, 255, 255, .04); outline: none; }
+.cslot:hover, .cslot:focus-visible { background: var(--hover); outline: none; }
 .cstack { width: min(22px, 70%); display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
 .cseg { width: 100%; }
 .cseg.c1 { background: var(--series-1); }
@@ -138,6 +208,16 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 @media (forced-colors: active) {
   .hbar, .cseg { forced-color-adjust: none; border: 1px solid CanvasText; }
 }
+/* Botó de tema sol/lluna (dins del selector d'idioma) */
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; }
+.theme-toggle svg { width: 1.45em; height: 1.45em; display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle .i-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .i-sun { display: block; }
+:root[data-theme="light"] .theme-toggle .i-moon { display: none; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .theme-toggle .i-sun { display: block; }
+  :root:not([data-theme="dark"]) .theme-toggle .i-moon { display: none; }
+}
 </style>
 </head>
 <body>
@@ -149,7 +229,12 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 </div>
 
 <main>
-	<a class="back" href="index.html" data-i18n="back">← Inicio</a>
+	<nav class="navbar">
+		<a class="back" href="index.html" data-i18n="back">← Inicio</a>
+		<a class="back" data-nav="movies" data-i18n="movies" hidden>Películas</a>
+		<a class="back" data-nav="tvshows" data-i18n="shows" hidden>Series</a>
+		<a class="back" data-nav="collections" data-i18n="collections" hidden>Colecciones</a>
+	</nav>
 	<h1 data-i18n="title">Estadísticas</h1>
 	<p class="sub" data-i18n="sub">Un vistazo a todo el catálogo</p>
 
@@ -169,11 +254,53 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 <footer data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
 
 <script>
+/* Tema clar / fosc: com a app.js (TMM_THEME). Per defecte segueix el sistema; el botó sol/lluna força l'altre i
+   es recorda a localStorage ("tmm_theme"). Si es torna al tema del sistema, el valor s'esborra. */
+(function () {
+	"use strict";
+	var KEY = "tmm_theme", root = document.documentElement;
+	var mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+	var MOON = '<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>';
+	var SUN = '<svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+	function read() { try { var v = localStorage.getItem(KEY); return v === "light" || v === "dark" ? v : null; } catch (e) { return null; } }
+	function write(v) { try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); } catch (e) { /* ignore */ } }
+	var override = read();
+	function system() { return mq && mq.matches ? "light" : "dark"; }
+	function current() { return override || system(); }
+	function paint() { if (override) root.setAttribute("data-theme", override); else root.removeAttribute("data-theme"); }
+	function refresh() {
+		var toLight = current() === "dark";
+		var txt = window.TMM_THEME_LABEL ? window.TMM_THEME_LABEL(toLight) : (toLight ? "Light theme" : "Dark theme");
+		Array.prototype.slice.call(document.querySelectorAll(".theme-toggle")).forEach(function (b) {
+			b.setAttribute("aria-label", txt); b.setAttribute("title", txt);
+		});
+	}
+	function toggle() {
+		var target = current() === "dark" ? "light" : "dark";
+		override = target === system() ? null : target;
+		write(override); paint(); refresh();
+	}
+	paint();
+	var sw = document.getElementById("langSwitcher");
+	if (sw && !sw.querySelector(".theme-toggle")) {
+		var b = document.createElement("button");
+		b.type = "button"; b.className = "theme-toggle"; b.innerHTML = MOON + SUN;
+		b.addEventListener("click", toggle);
+		sw.appendChild(b);
+	}
+	window.TMM_THEME_REFRESH = refresh;
+	if (mq && mq.addEventListener) mq.addEventListener("change", refresh);
+	window.addEventListener("storage", function (e) { if (e.key === KEY || e.key === null) { override = read(); paint(); refresh(); } });
+	refresh();
+})();
+</script>
+<script>
 (function () {
 	"use strict";
 
 	var STRINGS = {
 		ca: {
+			themeToLight: "Canvia al tema clar", themeToDark: "Canvia al tema fosc",
 			back: "← Inici", title: "Estadístiques", sub: "Un cop d'ull a tot el catàleg",
 			loading: "Carregant el catàleg…",
 			needsServer: "Les estadístiques llegeixen els llistats, així que només funcionen quan el web està servit per un servidor (el NAS), igual que la cerca global.",
@@ -190,6 +317,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 			footer: "Generat amb tinyMediaManager · plantilla Modern Grid"
 		},
 		es: {
+			themeToLight: "Cambiar al tema claro", themeToDark: "Cambiar al tema oscuro",
 			back: "← Inicio", title: "Estadísticas", sub: "Un vistazo a todo el catálogo",
 			loading: "Cargando el catálogo…",
 			needsServer: "Las estadísticas leen los listados, así que solo funcionan cuando la web está servida por un servidor (el NAS), igual que la búsqueda global.",
@@ -206,6 +334,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 			footer: "Generado con tinyMediaManager · plantilla Modern Grid"
 		},
 		en: {
+			themeToLight: "Switch to light theme", themeToDark: "Switch to dark theme",
 			back: "← Home", title: "Statistics", sub: "A glance at the whole catalog",
 			loading: "Loading the catalog…",
 			needsServer: "Statistics read the list pages, so they only work when the site is served by a web server (the NAS), like the global search.",
@@ -674,21 +803,23 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		try { var s = localStorage.getItem("tmm_lang"); if (s && STRINGS[s]) return s; } catch (e) { /* ignore */ }
 		return "en";
 	}
+	window.TMM_THEME_LABEL = function (toLight) { var d = STRINGS[lang]; return toLight ? d.themeToLight : d.themeToDark; };
 	function applyLang(l) {
 		lang = STRINGS[l] ? l : "en";
 		Array.prototype.slice.call(document.querySelectorAll("[data-i18n]")).forEach(function (n) {
 			var v = STRINGS[lang][n.getAttribute("data-i18n")];
 			if (v) n.textContent = v;
 		});
-		Array.prototype.slice.call(document.querySelectorAll("#langSwitcher button")).forEach(function (b) {
+		Array.prototype.slice.call(document.querySelectorAll("#langSwitcher button[data-lang]")).forEach(function (b) {
 			b.classList.toggle("active", b.dataset.lang === lang);
 		});
 		document.documentElement.lang = lang;
+		if (window.TMM_THEME_REFRESH) window.TMM_THEME_REFRESH();
 		document.title = t("title");
 		hideTip();
 		render();
 	}
-	Array.prototype.slice.call(document.querySelectorAll("#langSwitcher button")).forEach(function (b) {
+	Array.prototype.slice.call(document.querySelectorAll("#langSwitcher button[data-lang]")).forEach(function (b) {
 		b.addEventListener("click", function () {
 			try { localStorage.setItem("tmm_lang", b.dataset.lang); } catch (e) { /* ignore */ }
 			applyLang(b.dataset.lang);
@@ -696,6 +827,14 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 	});
 
 	// ---------------- càrrega ----------------
+	// Enllaços a les altres seccions (segons config.js; sense la carpeta, s'amaguen)
+	Array.prototype.slice.call(document.querySelectorAll("[data-nav]")).forEach(function (a) {
+		var k = a.getAttribute("data-nav"), d = routeDir(k);
+		if (d === null) return;
+		a.href = d + "/" + LIST_FILE[k];
+		a.hidden = false;
+	});
+
 	var state = document.getElementById("state");
 	function load() {
 		var keys = ["movies", "tvshows", "collections"].filter(function (k) { return routeDir(k) !== null; });

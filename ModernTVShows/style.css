@@ -22,11 +22,78 @@
   --maxw: 1600px;
   --shadow: 0 8px 24px rgba(0, 0, 0, .45);
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bg-rgb: 11, 11, 14;
+  --page-bg: #0b0b0e;
+  --line: #2a2a34;
+  --line-2: #23232c;
+  --line-3: #1c1c24;
+  --accent-ink: #1a1205;
+  --glass: rgba(0, 0, 0, .55);
+  --hair: rgba(255, 255, 255, .08);
+  --hover: rgba(255, 255, 255, .04);
+  --on-media: #ececed;
+  --on-media-dim: #b4b4be;
+  --warn-text: #e0a070;
+  color-scheme: dark;
+}
+
+/* Tema clar (crema + ambre). Segueix el sistema (prefers-color-scheme) i el botó sol/lluna de la
+   capçalera el pot forçar: <html data-theme="light|dark">. Sense JS el tema continua seguint el sistema. */
+:root[data-theme="light"] {
+  --bg: #f6f1e7;
+  --bg-elev: #fbf8f1;
+  --card: #ffffff;
+  --card-hover: #fffaf0;
+  --text: #1f1c17;
+  --text-dim: #5d574b;
+  --text-faint: #716b5e;
+  --accent: #a35c00;
+  --accent-dim: #f1dcb4;
+  --ok: #0f7a54;
+  --warn: #c4203d;
+  --shadow: 0 8px 24px rgba(70, 50, 20, .14);
+  --bg-rgb: 246, 241, 231;
+  --page-bg: #f6f1e7;
+  --line: #e1d8c6;
+  --line-2: #ebe3d3;
+  --line-3: #f0eadc;
+  --accent-ink: #ffffff;
+  --glass: rgba(255, 255, 255, .72);
+  --hair: rgba(0, 0, 0, .08);
+  --hover: rgba(0, 0, 0, .05);
+  --warn-text: #a0551a;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f6f1e7;
+    --bg-elev: #fbf8f1;
+    --card: #ffffff;
+    --card-hover: #fffaf0;
+    --text: #1f1c17;
+    --text-dim: #5d574b;
+    --text-faint: #716b5e;
+    --accent: #a35c00;
+    --accent-dim: #f1dcb4;
+    --ok: #0f7a54;
+    --warn: #c4203d;
+    --shadow: 0 8px 24px rgba(70, 50, 20, .14);
+    --bg-rgb: 246, 241, 231;
+    --page-bg: #f6f1e7;
+    --line: #e1d8c6;
+    --line-2: #ebe3d3;
+    --line-3: #f0eadc;
+    --accent-ink: #ffffff;
+    --glass: rgba(255, 255, 255, .72);
+    --hair: rgba(0, 0, 0, .08);
+    --hover: rgba(0, 0, 0, .05);
+    --warn-text: #a0551a;
+    color-scheme: light;
+  }
 }
 
 * { box-sizing: border-box; }
 
-html { color-scheme: dark; }
 
 body {
   margin: 0;
@@ -42,7 +109,7 @@ a:hover { color: var(--accent); }
 
 img { max-width: 100%; display: block; }
 
-::selection { background: var(--accent); color: #1a1200; }
+::selection { background: var(--accent); color: var(--accent-ink); }
 
 /* focus visibility, accessible by keyboard */
 :focus-visible {
@@ -62,7 +129,7 @@ img { max-width: 100%; display: block; }
   position: sticky;
   top: 0;
   z-index: 30;
-  background: linear-gradient(180deg, rgba(11,11,14,.98) 0%, rgba(11,11,14,.94) 70%, rgba(11,11,14,0) 100%);
+  background: linear-gradient(180deg, rgba(var(--bg-rgb),.98) 0%, rgba(var(--bg-rgb),.94) 70%, rgba(var(--bg-rgb),0) 100%);
   backdrop-filter: blur(6px);
   padding: 1.1rem 1.5rem .6rem;
 }
@@ -99,7 +166,7 @@ img { max-width: 100%; display: block; }
 .crosslink {
   color: var(--text-dim);
   font-size: .85rem;
-  border: 1px solid #2a2a34;
+  border: 1px solid var(--line);
   border-radius: 999px;
   padding: .3rem .8rem;
 }
@@ -127,7 +194,7 @@ img { max-width: 100%; display: block; }
   width: 100%;
   padding: .55rem .8rem .55rem 2.1rem;
   border-radius: 999px;
-  border: 1px solid #2a2a34;
+  border: 1px solid var(--line);
   background: var(--bg-elev);
   color: var(--text);
   font-size: .92rem;
@@ -136,7 +203,7 @@ img { max-width: 100%; display: block; }
 #search:focus { border-color: var(--accent); }
 
 .filter-toggle {
-  border: 1px solid #2a2a34;
+  border: 1px solid var(--line);
   background: var(--bg-elev);
   color: var(--text);
   border-radius: 999px;
@@ -148,7 +215,7 @@ img { max-width: 100%; display: block; }
 
 .lang-switcher {
   display: flex;
-  border: 1px solid #2a2a34;
+  border: 1px solid var(--line);
   border-radius: 999px;
   overflow: hidden;
   flex: none;
@@ -162,7 +229,7 @@ img { max-width: 100%; display: block; }
   font-weight: 700;
   letter-spacing: .03em;
   cursor: pointer;
-  border-right: 1px solid #2a2a34;
+  border-right: 1px solid var(--line);
 }
 .lang-switcher button:last-child { border-right: 0; }
 .lang-switcher button.active { background: var(--accent-dim); color: var(--accent); }
@@ -191,7 +258,7 @@ img { max-width: 100%; display: block; }
 .filter-group input[type="range"] {
   background: var(--bg-elev);
   color: var(--text);
-  border: 1px solid #2a2a34;
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   padding: .4rem .55rem;
   font-size: .85rem;
@@ -205,7 +272,7 @@ img { max-width: 100%; display: block; }
 }
 
 .chip {
-  border: 1px solid #2a2a34;
+  border: 1px solid var(--line);
   background: var(--bg-elev);
   color: var(--text-dim);
   border-radius: 999px;
@@ -219,12 +286,12 @@ img { max-width: 100%; display: block; }
 .chip.excluded { background: rgba(233,69,96,.15); border-color: var(--warn); color: var(--warn); text-decoration: line-through; }
 
 /* Selector I / O dels gèneres */
-.genre-mode { display: inline-flex; align-self: flex-start; border: 1px solid #2a2a34; border-radius: 999px; overflow: hidden; }
+.genre-mode { display: inline-flex; align-self: flex-start; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
 .genre-mode button {
   border: 0; background: var(--bg-elev); color: var(--text-dim);
   font-size: .72rem; font-weight: 700; padding: .2rem .8rem; cursor: pointer;
 }
-.genre-mode button.active { background: var(--accent); color: #1a1205; }
+.genre-mode button.active { background: var(--accent); color: var(--accent-ink); }
 .filter-hint { color: var(--text-faint); font-size: .7rem; max-width: 420px; }
 
 .az-bar {
@@ -237,7 +304,7 @@ img { max-width: 100%; display: block; }
 }
 
 .az-btn {
-  border: 1px solid #2a2a34;
+  border: 1px solid var(--line);
   background: var(--bg-elev);
   color: var(--text-dim);
   border-radius: var(--radius-sm);
@@ -252,6 +319,23 @@ img { max-width: 100%; display: block; }
 }
 .az-btn:hover { border-color: var(--accent); color: var(--accent); }
 .az-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* Pantalles molt estretes: les lletres es converteixen en un desplegable d'una línia */
+.az-select {
+  display: none;
+  height: 2.2rem;
+  padding: 0 .7rem;
+  background: var(--bg-elev);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: .85rem;
+  font-weight: 600;
+}
+@media (max-width: 560px) {
+  .az-bar .az-btn { display: none; }
+  .az-bar .az-select { display: block; }
+}
 
 .clear-filters {
   align-self: flex-end;
@@ -351,8 +435,8 @@ img { max-width: 100%; display: block; }
   letter-spacing: .02em;
   z-index: 2;
 }
-.badge.quality { bottom: .5rem; left: .5rem; background: rgba(0,0,0,.7); color: var(--text); white-space: nowrap; }
-.badge.versions { top: .5rem; left: .5rem; background: var(--accent); color: #1a1205; }
+.badge.quality { bottom: .5rem; left: .5rem; background: rgba(0,0,0,.7); color: var(--on-media); white-space: nowrap; }
+.badge.versions { top: .5rem; left: .5rem; background: var(--accent); color: var(--accent-ink); }
 
 /* Banderes d'idioma (cercles) */
 .lang-flags { display: inline-flex; gap: .25rem; align-items: center; }
@@ -360,7 +444,7 @@ img { max-width: 100%; display: block; }
 .lang-flag {
   width: 1.35rem; height: 1.35rem; border-radius: 50%; overflow: hidden;
   border: 1px solid rgba(255,255,255,.55); box-shadow: 0 1px 4px rgba(0,0,0,.6);
-  background: #2a2a34; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--line); display: inline-flex; align-items: center; justify-content: center;
   font-size: .5rem; font-weight: 800; color: var(--text); cursor: default; flex: none;
 }
 .lang-flag svg { width: 100%; height: 100%; display: block; }
@@ -368,7 +452,7 @@ img { max-width: 100%; display: block; }
 .tech-table .lang-flag { width: 1.5rem; height: 1.5rem; }
 .chip:disabled { opacity: .45; cursor: not-allowed; }
 .video-fmt { display: block; }
-.badge.lang { bottom: .5rem; right: .5rem; background: rgba(0,0,0,.7); color: var(--text-dim); max-width: 62%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.badge.lang { bottom: .5rem; right: .5rem; background: rgba(0,0,0,.7); color: var(--on-media-dim); max-width: 62%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
 
 .card .overlay {
   position: absolute;
@@ -422,7 +506,7 @@ img { max-width: 100%; display: block; }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(11,11,14,.25) 0%, rgba(11,11,14,.55) 55%, var(--bg) 100%);
+  background: linear-gradient(180deg, rgba(11,11,14,.25) 0%, rgba(11,11,14,.55) 55%, var(--page-bg) 100%);
 }
 
 .back-btn {
@@ -430,7 +514,7 @@ img { max-width: 100%; display: block; }
   top: 1rem;
   left: 1rem;
   z-index: 5;
-  background: rgba(0,0,0,.55);
+  background: var(--glass);
   border-radius: 999px;
   width: 2.2rem;
   height: 2.2rem;
@@ -443,7 +527,7 @@ img { max-width: 100%; display: block; }
 /* Enllaços a la portada i a les estadístiques (només si config.js els activa) */
 .hero-links { position: absolute; top: 1rem; left: 3.9rem; z-index: 5; display: flex; gap: .4rem; }
 .hero-links .crosslink {
-  background: rgba(0,0,0,.55); border-color: transparent; color: var(--text);
+  background: var(--glass); border-color: transparent; color: var(--text);
   height: 2.2rem; display: inline-flex; align-items: center; padding: 0 .9rem;
 }
 .hero-links .crosslink:hover { border-color: var(--accent); }
@@ -474,7 +558,7 @@ img { max-width: 100%; display: block; }
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow);
-  border: 1px solid rgba(255,255,255,.08);
+  border: 1px solid var(--hair);
 }
 
 .hero-info h1 { margin: 0 0 .3rem; font-size: 1.9rem; }
@@ -483,7 +567,7 @@ img { max-width: 100%; display: block; }
 .badge-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .7rem; }
 .badge-row .pill {
   background: var(--bg-elev);
-  border: 1px solid #2a2a34;
+  border: 1px solid var(--line);
   border-radius: 999px;
   padding: .2rem .7rem;
   font-size: .78rem;
@@ -514,7 +598,7 @@ img { max-width: 100%; display: block; }
 .person-link:hover { border-bottom-color: var(--accent); }
 
 .tech-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
-.tech-table td { padding: .35rem 0; border-bottom: 1px solid #23232c; }
+.tech-table td { padding: .35rem 0; border-bottom: 1px solid var(--line-2); }
 .tech-table td:first-child { color: var(--text-dim); width: 40%; }
 
 .side { align-self: start; background: var(--bg-elev); border-radius: var(--radius); padding: 1rem 1.1rem; }
@@ -527,7 +611,7 @@ img { max-width: 100%; display: block; }
   cursor: pointer;
   font-weight: 700;
   padding: .6rem .2rem;
-  border-bottom: 1px solid #23232c;
+  border-bottom: 1px solid var(--line-2);
 }
 .season-title .arrow { transition: transform .15s ease; color: var(--text-dim); }
 .season-block.collapsed .arrow { transform: rotate(-90deg); }
@@ -537,7 +621,7 @@ img { max-width: 100%; display: block; }
   display: flex;
   gap: .9rem;
   padding: .7rem .2rem;
-  border-bottom: 1px solid #1c1c24;
+  border-bottom: 1px solid var(--line-3);
 }
 .episode .ep-thumb { width: 130px; flex: none; border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 16/9; background: var(--bg); }
 .episode .ep-thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -568,21 +652,52 @@ footer.site-footer {
 .versions-box { margin: 1.2rem 0 0; }
 .versions-box[hidden] { display: none; }
 .version-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
-.version-item { background: var(--card); border: 1px solid #2a2a34; border-radius: 10px; padding: .6rem .8rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem .9rem; }
+.version-item { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: .6rem .8rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem .9rem; }
 .version-item.current { border-color: var(--accent-dim); background: var(--card-hover); }
 .version-main { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; }
 .version-main a { color: var(--text); font-weight: 600; }
 .version-main a:hover { color: var(--accent); }
 .version-main .pill { font-size: .72rem; }
-.version-main .pill.pill-current { background: var(--accent); border-color: var(--accent); color: #1a1205; }
+.version-main .pill.pill-current { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .version-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; color: var(--text-dim); font-size: .82rem; }
-.version-main .pill { background: var(--bg-elev); border: 1px solid #2a2a34; border-radius: 999px; padding: .1rem .6rem; color: var(--text-dim); }
+.version-main .pill { background: var(--bg-elev); border: 1px solid var(--line); border-radius: 999px; padding: .1rem .6rem; color: var(--text-dim); }
 .badge-row .pill.versions-jump { color: var(--accent); border-color: var(--accent-dim); text-decoration: none; }
 .badge.shared-warn { top: .5rem; right: .5rem; background: #b4541a; color: #fff; }
-.versions-warn { margin: .7rem 0 0; font-size: .8rem; color: #e0a070; }
+.versions-warn { margin: .7rem 0 0; font-size: .8rem; color: var(--warn-text); }
 .select-pair { display: flex; gap: .5rem; }
 .select-pair select { flex: 1; min-width: 0; }
 .lang-chip { display: inline-flex; align-items: center; gap: .35rem; }
 .lang-chip .lang-flag { width: 18px; height: 18px; flex: none; position: static; }
 .lang-chip small { color: var(--text-faint); font-size: .7rem; }
 .lang-chip.active small { color: inherit; }
+
+/* La fitxa té una capçalera cinematogràfica sobre el fanart: es queda FOSCA també en tema clar (el text blanc
+   sobre una foto qualsevol és l'únic que sempre es llegeix). Al final s'esvaeix cap al color de la pàgina. */
+.hero {
+  --bg-elev: #131318; --card: #1b1b22; --card-hover: #232330;
+  --text: #ececed; --text-dim: #b4b4be; --text-faint: #8a8a96;
+  --accent: #f5a623; --accent-dim: #7a5518; --accent-ink: #1a1205;
+  --line: #2a2a34; --line-2: #23232c; --glass: rgba(0, 0, 0, .55); --hair: rgba(255, 255, 255, .08);
+  --shadow: 0 8px 24px rgba(0, 0, 0, .45); --hover: rgba(255, 255, 255, .04);
+  color-scheme: dark;
+  color: var(--text);
+}
+:root[data-theme="light"] .hero::before {
+  background: linear-gradient(180deg, rgba(11,11,14,.3) 0%, rgba(11,11,14,.62) 70%, rgba(11,11,14,.62) 90%, var(--page-bg) 100%);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .hero::before {
+    background: linear-gradient(180deg, rgba(11,11,14,.3) 0%, rgba(11,11,14,.62) 70%, rgba(11,11,14,.62) 90%, var(--page-bg) 100%);
+  }
+}
+
+/* Botó de tema sol/lluna (dins del selector d'idioma) */
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; }
+.theme-toggle svg { width: 1.45em; height: 1.45em; display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle .i-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .i-sun { display: block; }
+:root[data-theme="light"] .theme-toggle .i-moon { display: none; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .theme-toggle .i-sun { display: block; }
+  :root:not([data-theme="dark"]) .theme-toggle .i-moon { display: none; }
+}

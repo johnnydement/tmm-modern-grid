@@ -40,7 +40,7 @@
 				${foreach movie.genres genre}<a class="chip" href="../movielist.html?genre=${genre}">${genre}</a>${end}
 			</div>
 			${if movie.movieSet}
-			<p><a class="chip" href="../../collections/${movie.movieSet}/movieset.html" data-route="collections" data-root="../../" data-rest="${movie.movieSet}/movieset.html"><span data-i18n="collectionPrefix">📚 Colección: </span>${movie.movieSet}</a></p>
+			<p><a class="chip" href="../../collections/${movie.movieSet;filename(escape=true)}/movieset.html" data-route="collections" data-root="../../" data-rest="${movie.movieSet;filename(escape=true)}/movieset.html"><span data-i18n="collectionPrefix">📚 Colección: </span>${movie.movieSet}</a></p>
 			${end}
 		</div>
 	</div>

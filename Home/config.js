@@ -29,7 +29,7 @@
      They take priority over the standard, which is ISO 639-1 (two letters: es, ca, en, ja, zh...);
      the usual three-letter ISO 639-2 codes (spa, eng, cat, jpn, zho...) are also understood.
      Each code has: name (a string, or {ca, es, en}), flag (a language that already has a flag:
-     es, en, ca, fr, de, it, pt, ja, ko, zh, ru, nl, pl, sv, tr) and mark (up to 3 letters
+     es, en, ca, fr, de, it, pt, eu, gl, ja, ko, zh, ru, nl, pl, sv, tr) and mark (up to 3 letters
      drawn over the flag). Codes must be 2-3 letters to be recognised in a file name.
      Regions are read but dropped, like tMM does: "pt-BR" counts as pt and "es-MX" / "es-419" as es.
      To keep a variant apart, declare it: "pt-BR": {} (Portuguese flag, mark "BR", automatic name) or
@@ -47,6 +47,10 @@ window.TMM_CONFIG = {
     home: true,                  // "Home" link on every page (index.html at the root); false/"" = hide
     stats: true                  // "Statistics" link on every page (stats.html at the root); false/"" = hide
   },
+  // Collection links use tMM's own folder name (${movieSet;filename}, tMM 5.3.5 or later).
+  // With older tMM versions the colon of "Alien: Romulus" is replaced by this script (-> "Alien - Romulus"), as tMM 5.3.4
+  // does in the folder name; set "keep" if your collection folders keep the colon.
+  colonInCollectionFolders: "replace",  // "replace" | "keep"
   languageSource: "tracks",      // "tracks" | "filename"
   languageCodes: {}              // see above
 };

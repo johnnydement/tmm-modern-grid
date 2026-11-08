@@ -36,13 +36,13 @@
 	<div class="grid" id="grid">
 		${foreach movieSets movieSet}
 		<div class="card" data-title="${movieSet.title}">
-			<a class="poster-link" href="./${movieSet.title}/movieset.html">
+			<a class="poster-link" href="./${movieSet;filename(escape=true)}/movieset.html">
 				<div class="poster-stack">
 					${if movieSet.movies}${foreach movieSet.movies movie}<img src="images/${movie;copyArtwork(type=POSTER, thumb=true, width=350, escape=true, default=nopicture.png)}" alt="${movieSet.title}" loading="lazy" onerror="this.onerror=null;this.src='nopicture.png';"/>${end}${else}<img src="nopicture.png" alt="${movieSet.title}"/>${end}
 				</div>
 			</a>
 			<div class="meta">
-				<a class="title" href="./${movieSet.title}/movieset.html">${movieSet.title}</a>
+				<a class="title" href="./${movieSet;filename(escape=true)}/movieset.html">${movieSet.title}</a>
 			</div>
 		</div>
 		${end}
