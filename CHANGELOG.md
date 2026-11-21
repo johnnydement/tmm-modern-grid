@@ -13,6 +13,16 @@ Every release listed here has been tested by me on real exports of my own librar
 
 ---
 
+## [0.30.1] — Housekeeping
+
+No changes to the templates, the landing page or the statistics page: if you have 0.30.0, you already have everything.
+
+### Changed
+- The GitHub workflows use `actions/checkout@v5` (Node 24) instead of `@v4`, which runs on Node 20 and is being retired
+  by GitHub. This only affects how releases are built here, not what you download.
+
+---
+
 ## [0.30.0] — Poster badges on demand, watched marks are back
 
 A round number for a round release. There is no 0.29.0: it was going to be "just the watched marks", and then it grew.

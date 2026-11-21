@@ -396,7 +396,7 @@ to fork it and adapt it to your own library. If it breaks, you now own the piece
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest: **0.30.0** — every poster badge can be switched off in
+See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest: **0.30.1** (housekeeping, no template changes), on top of **0.30.0** — every poster badge can be switched off in
 `config.js`, optional watched marks with their own filter, a configurable footer credit, and proper singulars
 ("1 episode", at last). Recent versions:
 
