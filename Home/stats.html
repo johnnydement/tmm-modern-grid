@@ -199,6 +199,9 @@ h1 { margin: .6rem 0 .3rem; font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
 .tip .tr .k { display: inline-block; width: 12px; height: 2px; border-radius: 1px; }
 .tip .tr .n { color: var(--text-dim); }
 
+footer a { color: inherit; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.mg-footer-plain .mg-credit, .mg-footer-none footer { display: none; }
 footer { text-align: center; color: var(--text-faint); font-size: .78rem; padding: 1.2rem 1rem 1.6rem; }
 
 @media (max-width: 760px) {
@@ -251,9 +254,15 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
-<footer data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+<footer><span data-i18n="footerPre">Generado con</span> <a href="https://www.tinymediamanager.org" target="_blank" rel="noopener">tinyMediaManager</a> · <a href="https://github.com/johnnydement/tmm-modern-grid" target="_blank" rel="noopener"><span data-i18n="footerTemplate">plantilla Modern Grid</span></a><span class="mg-credit"> <span data-i18n="creditBy">de</span> <a href="https://jo.cat/johnnydement" target="_blank" rel="noopener">Johnnydement</a></span></footer>
 
 <script>
+	// Footer: config.js footer = "credit" (default) | "plain" (no author) | "none" (no footer)
+	(function () {
+		var f = window.TMM_CONFIG && window.TMM_CONFIG.footer;
+		document.documentElement.classList.toggle("mg-footer-plain", f === "plain");
+		document.documentElement.classList.toggle("mg-footer-none", f === "none" || f === false);
+	})();
 /* Light / dark theme: same as app.js (TMM_THEME). By default it follows the system; the sun/moon button forces the other one and
    it is remembered in localStorage ("tmm_theme"). Going back to the system theme deletes the value. */
 (function () {
@@ -305,16 +314,16 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 			loading: "Carregant el catàleg…",
 			needsServer: "Les estadístiques llegeixen els llistats, així que només funcionen quan el web està servit per un servidor (el NAS), igual que la cerca global.",
 			movies: "Pel·lícules", shows: "Sèries", collections: "Col·leccions",
-			tHours: "Hores de cinema", tHoursSub: "≈ {d} dies seguits",
+			tHours: "Hores de cinema", tHoursSub: "≈ {d} dies seguits", tHoursSubOne: "≈ {d} dia seguit",
 			tSize: "Mida dels vídeos", tSizeSub: "de mitjana {s} per pel·lícula",
 			tMulti: "Amb diverses versions", tMultiSub: "{p}% dels títols",
-			tShowsSub: "{s} temporades · {e} episodis", tMoviesSub: "{n} entrades a tMM",
+			tShowsSub: "{s} {sw} · {e} {ew}", wSeasons: "temporades", wSeasonsOne: "temporada", wEpisodes: "episodis", wEpisodesOne: "episodi", tMoviesSub: "{n} entrades a tMM",
 			qTitle: "Qualitat de les pel·lícules", qSub: "Millor versió de cada títol",
 			lTitle: "Idiomes d'àudio", lSub: "Pel·lícules que tenen cada idioma (en qualsevol versió)",
 			dTitle: "Per dècada d'estrena", dSub: "Títols segons l'any",
-			gTitle: "Gèneres", gSub: "Els {n} més freqüents",
+			gTitle: "Gèneres", gSub: "Els {n} més freqüents", gSubOne: "El més freqüent",
 			table: "Taula", chart: "Gràfic", titles: "títols", noData: "Sense dades", other: "Sense resolució",
-			footer: "Generat amb tinyMediaManager · plantilla Modern Grid"
+			footerPre: "Generat amb", footerTemplate: "plantilla Modern Grid", creditBy: "de"
 		},
 		es: {
 			themeToLight: "Cambiar al tema claro", themeToDark: "Cambiar al tema oscuro",
@@ -322,16 +331,16 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 			loading: "Cargando el catálogo…",
 			needsServer: "Las estadísticas leen los listados, así que solo funcionan cuando la web está servida por un servidor (el NAS), igual que la búsqueda global.",
 			movies: "Películas", shows: "Series", collections: "Colecciones",
-			tHours: "Horas de cine", tHoursSub: "≈ {d} días seguidos",
+			tHours: "Horas de cine", tHoursSub: "≈ {d} días seguidos", tHoursSubOne: "≈ {d} día seguido",
 			tSize: "Tamaño de los vídeos", tSizeSub: "de media {s} por película",
 			tMulti: "Con varias versiones", tMultiSub: "{p}% de los títulos",
-			tShowsSub: "{s} temporadas · {e} episodios", tMoviesSub: "{n} entradas en tMM",
+			tShowsSub: "{s} {sw} · {e} {ew}", wSeasons: "temporadas", wSeasonsOne: "temporada", wEpisodes: "episodios", wEpisodesOne: "episodio", tMoviesSub: "{n} entradas en tMM",
 			qTitle: "Calidad de las películas", qSub: "Mejor versión de cada título",
 			lTitle: "Idiomas de audio", lSub: "Películas que tienen cada idioma (en cualquier versión)",
 			dTitle: "Por década de estreno", dSub: "Títulos según el año",
-			gTitle: "Géneros", gSub: "Los {n} más frecuentes",
+			gTitle: "Géneros", gSub: "Los {n} más frecuentes", gSubOne: "El más frecuente",
 			table: "Tabla", chart: "Gráfico", titles: "títulos", noData: "Sin datos", other: "Sin resolución",
-			footer: "Generado con tinyMediaManager · plantilla Modern Grid"
+			footerPre: "Generado con", footerTemplate: "plantilla Modern Grid", creditBy: "de"
 		},
 		en: {
 			themeToLight: "Switch to light theme", themeToDark: "Switch to dark theme",
@@ -339,16 +348,16 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 			loading: "Loading the catalog…",
 			needsServer: "Statistics read the list pages, so they only work when the site is served by a web server (the NAS), like the global search.",
 			movies: "Movies", shows: "TV Shows", collections: "Collections",
-			tHours: "Hours of film", tHoursSub: "≈ {d} days non-stop",
+			tHours: "Hours of film", tHoursSub: "≈ {d} days non-stop", tHoursSubOne: "≈ {d} day non-stop",
 			tSize: "Video size", tSizeSub: "{s} per movie on average",
 			tMulti: "With several versions", tMultiSub: "{p}% of titles",
-			tShowsSub: "{s} seasons · {e} episodes", tMoviesSub: "{n} tMM entries",
+			tShowsSub: "{s} {sw} · {e} {ew}", wSeasons: "seasons", wSeasonsOne: "season", wEpisodes: "episodes", wEpisodesOne: "episode", tMoviesSub: "{n} tMM entries",
 			qTitle: "Movie quality", qSub: "Best version of each title",
 			lTitle: "Audio languages", lSub: "Movies that have each language (in any version)",
 			dTitle: "By release decade", dSub: "Titles by year",
-			gTitle: "Genres", gSub: "The {n} most frequent",
+			gTitle: "Genres", gSub: "The {n} most frequent", gSubOne: "The most frequent",
 			table: "Table", chart: "Chart", titles: "titles", noData: "No data", other: "No resolution",
-			footer: "Generated with tinyMediaManager · Modern Grid template"
+			footerPre: "Generated with", footerTemplate: "Modern Grid template", creditBy: "by"
 		}
 	};
 
@@ -377,6 +386,8 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 	function tf(key, map) {
 		return t(key).replace(/\{(\w+)\}/g, function (m, k) { return map[k] !== undefined ? map[k] : m; });
 	}
+	// Singular form ("<key>One") when the count is 1
+	function tn(key, count) { return Number(count) === 1 ? t(key + "One") : t(key); }
 	function nf(n, digits) {
 		try { return new Intl.NumberFormat(lang, { maximumFractionDigits: digits || 0 }).format(n); }
 		catch (e) { return String(Math.round(n)); }
@@ -721,12 +732,12 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		if (shows) {
 			var se = shows.reduce(function (s, x) { return s + x.seasons; }, 0);
 			var ep = shows.reduce(function (s, x) { return s + x.episodes; }, 0);
-			tiles.appendChild(tile(t("shows"), nf(shows.length), tf("tShowsSub", { s: nf(se), e: nf(ep) })));
+			tiles.appendChild(tile(t("shows"), nf(shows.length), tf("tShowsSub", { s: nf(se), sw: tn("wSeasons", se), e: nf(ep), ew: tn("wEpisodes", ep) })));
 		}
 		if (data.collections !== null) tiles.appendChild(tile(t("collections"), nf(data.collections), ""));
 		if (movies) {
 			var minutes = movies.reduce(function (s, m) { return s + m.runtime; }, 0);
-			tiles.appendChild(tile(t("tHours"), nf(minutes / 60), tf("tHoursSub", { d: nf(minutes / 60 / 24, 1) })));
+			tiles.appendChild(tile(t("tHours"), nf(minutes / 60), tf(nf(minutes / 60 / 24, 1) === nf(1, 1) ? "tHoursSubOne" : "tHoursSub", { d: nf(minutes / 60 / 24, 1) })));
 			var bytes = movies.reduce(function (s, m) { return s + m.bytes; }, 0);
 			tiles.appendChild(tile(t("tSize"), fmtSize(bytes), movies.length ? tf("tSizeSub", { s: fmtSize(bytes / movies.length) }) : ""));
 		}
@@ -791,7 +802,7 @@ footer { text-align: center; color: var(--text-faint); font-size: .78rem; paddin
 		var gSeries = [];
 		if (movies) gSeries.push({ name: t("movies"), cls: "c1", color: C1, values: gKeys.map(function (g) { return gm[g] || 0; }) });
 		if (shows) gSeries.push({ name: t("shows"), cls: "c2", color: C2, values: gKeys.map(function (g) { return gs[g] || 0; }) });
-		cardShell("cGenres", t("gTitle"), tf("gSub", { n: gKeys.length }), function (card) {
+		cardShell("cGenres", t("gTitle"), tf(gKeys.length === 1 ? "gSubOne" : "gSub", { n: gKeys.length }), function (card) {
 			hbars(card, gKeys, gSeries);
 		}, { head: [t("gTitle")].concat(gSeries.map(function (s) { return s.name; })), rows: gKeys.map(function (g, i) { return [g].concat(gSeries.map(function (s) { return nf(s.values[i]); })); }) });
 

@@ -120,7 +120,8 @@
 			data-media="${foreach movie.mediaFiles mf}${mf.type}~${mf.videoWidth}x${mf.videoHeight}~${mf.videoCodec}~${mf.hdrFormat}~${mf.filesize}~${foreach mf.audioStreams a}${a.audioChannels}:${a.language},${end}§${end}"
 			data-vid="${if movie.ids.tmdb}tmdb:${movie.ids.tmdb}${else}${if movie.ids.imdb}imdb:${movie.ids.imdb}${end}${end}"
 			data-tmdb="${if movie.ids.tmdb}${movie.ids.tmdb}${end}"
-			data-imdb="${if movie.ids.imdb}${movie.ids.imdb}${end}">
+			data-imdb="${if movie.ids.imdb}${movie.ids.imdb}${end}"
+			data-watched="${if movie.watched}1${end}">
 			<a class="poster-link" href="movies/${movie;filename(escape=false)}.html">
 				<img src="images/${movie;copyArtwork(type=POSTER, thumb=true, width=350, escape=true, default=nopicture.png)}" alt="${movie.title}" loading="lazy" onerror="this.onerror=null;this.src='nopicture.png';"/>
 				<div class="overlay"><p>${foreach movie.genres genre , }${genre}${end}</p></div>
@@ -135,7 +136,7 @@
 	<div class="empty-state" id="emptyState" data-i18n="emptyMovies">Ninguna película coincide con los filtros actuales.</div>
 </main>
 
-<footer class="site-footer" data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+<footer class="site-footer"><span data-i18n="footerPre">Generado con</span> <a href="https://www.tinymediamanager.org" target="_blank" rel="noopener">tinyMediaManager</a> · <a href="https://github.com/johnnydement/tmm-modern-grid" target="_blank" rel="noopener"><span data-i18n="footerTemplate">plantilla Modern Grid</span></a><span class="mg-credit"> <span data-i18n="creditBy">de</span> <a href="https://jo.cat/johnnydement" target="_blank" rel="noopener">Johnnydement</a></span></footer>
 
 <script src="../config.js"></script>
 <script src="app.js"></script>

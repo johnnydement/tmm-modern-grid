@@ -13,6 +13,45 @@ Every release listed here has been tested by me on real exports of my own librar
 
 ---
 
+## [0.30.0] — Poster badges on demand, watched marks are back
+
+A round number for a round release. There is no 0.29.0: it was going to be "just the watched marks", and then it grew.
+
+### Added
+- **Every poster badge can be switched off** in `config.js` with the new `badges` option: `quality`, `seasons`, `languages`,
+  `versions`, `sharedWarning` and `hover` (the genres shown on mouse-over). All of them are on by default, so nothing changes
+  unless you say so. Hiding a badge does not remove its filter. No re-export needed for these.
+- **Watched marks**, off by default (`badges.watched: true` to switch them on). They were removed in 0.7.0 because my site is a
+  catalogue and not a viewing tracker, which is still true for me, but not necessarily for you:
+  - a ✓ on the poster of watched titles, and "7/24" on TV shows you are halfway through;
+  - a "Watched" pill on movie and TV show pages, a ✓ on each watched episode and "N watched" next to each season;
+  - a **Watched / Not watched** filter (`?watched=1` / `?watched=0`), which only appears if at least one title in the export
+    is watched, so a library that never uses the flag does not get a filter with nothing in it.
+  A title counts as watched if any of its versions is. The data comes from tMM's own watched flag (`movie.watched`,
+  `show.watched`, `episode.watched`), so it is only as good as you keep it in tMM (or in Kodi / Trakt, if you sync).
+- **Footer credit and `footer` option.** The footer now reads "Generated with tinyMediaManager · Modern Grid template
+  by Johnnydement", where each name is a link: the tinyMediaManager website, this repository and the author (plain text, underlined on hover). `footer: "plain"` in `config.js` drops the author, `footer: "none"`
+  drops the whole line. The credit is written in the HTML, so it also shows without a `config.js`.
+
+### Changed
+- The seasons badge on TV posters gets its own class (`badge seasons`), so it can be hidden separately from the quality badge.
+- `template.conf` descriptions mention the optional badges; the TV one no longer promises watched marks that had been gone
+  since 0.7.0 (now it is right again, by sheer persistence).
+
+### Fixed
+- **Singular forms** everywhere a number is followed by a word: "1 title", "1 collection", "1 season", "1 episode",
+  "1 watched" (and "1 títol / 1 temporada / 1 episodi / 1 vist", "1 título / 1 temporada / 1 episodio / 1 visto"), in the list
+  headers, the seasons pill and season summaries of TV show pages, the versions list, the landing page cards and the
+  statistics page. It always said "1 episodes" before.
+
+Needs a **re-export** for the watched marks, the seasons pill and the footer credit (movies, TV shows and collections), plus the new `app.js`,
+`style.css`, `index.html` and `stats.html`. Exports made with older versions keep working and simply show no watched marks.
+
+**`config.js` is not part of the export, so it is not updated for you.** If you keep your own copy, the new options will not
+appear in it: copy the `badges` block and the `footer` line from the new `Home/config.js` into yours (if they are missing, you get the defaults).
+
+---
+
 ## [0.28.0] — Code comments in English
 
 ### Changed

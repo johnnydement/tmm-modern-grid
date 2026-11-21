@@ -32,8 +32,9 @@
 			${if tvShow.tagline}<p class="tagline">${tvShow.tagline}</p>${end}
 			<div class="badge-row">
 				<span class="pill">${tvShow.year}</span>
-				${if tvShow.seasonCount}<span class="pill">${tvShow.seasonCount} <span data-i18n="seasonsWord">temporadas</span></span>${end}
+				${if tvShow.seasonCount}<span class="pill">${tvShow.seasonCount} <span data-i18n="seasonsWord" data-i18n-count="${tvShow.seasonCount}">temporadas</span></span>${end}
 				${if tvShow.certification}<span class="pill">${tvShow.certification}</span>${end}
+				${if tvShow.watched}<span class="pill pill-watched" hidden>✓ <span data-i18n="watchedLabel">Visto</span></span>${end}
 			</div>
 			<div class="genre-row">
 				${foreach tvShow.genres genre}<a class="chip" href="../tvshows.html?genre=${genre}">${genre}</a>${end}
@@ -60,7 +61,7 @@
 		<div id="seasons"></div>
 		<div id="episodesFlat" hidden>
 			${foreach tvShow.episodes episode}
-			<div class="episode" data-season="${episode.season}" data-episode="${episode.episode}">
+			<div class="episode" data-season="${episode.season}" data-episode="${episode.episode}" data-watched="${if episode.watched}1${end}">
 				<div class="ep-thumb">
 					<img loading="lazy" onerror="this.style.visibility='hidden';" src="../images/episodes/${episode;copyArtwork(type=THUMB, thumb=true, width=320, escape=true, default=../nofanart.png, destination=images/episodes)}" alt=""/>
 				</div>
@@ -82,7 +83,7 @@
 	</aside>
 </div>
 
-<footer class="site-footer" data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+<footer class="site-footer"><span data-i18n="footerPre">Generado con</span> <a href="https://www.tinymediamanager.org" target="_blank" rel="noopener">tinyMediaManager</a> · <a href="https://github.com/johnnydement/tmm-modern-grid" target="_blank" rel="noopener"><span data-i18n="footerTemplate">plantilla Modern Grid</span></a><span class="mg-credit"> <span data-i18n="creditBy">de</span> <a href="https://jo.cat/johnnydement" target="_blank" rel="noopener">Johnnydement</a></span></footer>
 <script src="../../config.js"></script>
 <script src="../app.js"></script>
 </body>

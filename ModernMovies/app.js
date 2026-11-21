@@ -43,7 +43,8 @@ var TMM_I18N = (function () {
       clearFilters: "Neteja els filtres",
       emptyMovies: "Cap pel·lícula coincideix amb els filtres actuals.",
       emptyShows: "Cap sèrie coincideix amb els filtres actuals.",
-      footer: "Generat amb tinyMediaManager · plantilla Modern Grid",
+      footerPre: "Generat amb", footerTemplate: "plantilla Modern Grid",
+      creditBy: "de",
       seasonsAbbrev: "T",
       seasonsWord: "temporades",
       synopsisTitle: "Sinopsi",
@@ -101,7 +102,21 @@ var TMM_I18N = (function () {
       videoLabel: "Vídeo",
       audioLabel: "Àudio",
       sizeLabel: "Mida",
-      languagesLabel: "Idiomes"
+      languagesLabel: "Idiomes",
+      watchedLabel: "Vist",
+      watchedNot: "Pendent",
+      watchedAll: "Tots",
+      watchedFilter: "Vist / pendent",
+      watchedInProgress: "En curs",
+      watchedWord: "vistos",
+      watchedAllEpisodes: "tots vistos",
+      // Singular forms, used when the number is 1 (see TMM_I18N.n)
+      titlesSuffixOne: "títol",
+      collectionsSuffixOne: "col·lecció",
+      seasonsWordOne: "temporada",
+      episodesWordOne: "episodi",
+      watchedWordOne: "vist",
+      watchedAllEpisodesOne: "vist"
     },
     es: {
       moviesTitle: "Películas",
@@ -131,7 +146,8 @@ var TMM_I18N = (function () {
       clearFilters: "Borrar filtros",
       emptyMovies: "Ninguna película coincide con los filtros actuales.",
       emptyShows: "Ninguna serie coincide con los filtros actuales.",
-      footer: "Generado con tinyMediaManager · plantilla Modern Grid",
+      footerPre: "Generado con", footerTemplate: "plantilla Modern Grid",
+      creditBy: "de",
       seasonsAbbrev: "T",
       seasonsWord: "temporadas",
       synopsisTitle: "Sinopsis",
@@ -189,7 +205,20 @@ var TMM_I18N = (function () {
       videoLabel: "Vídeo",
       audioLabel: "Audio",
       sizeLabel: "Tamaño",
-      languagesLabel: "Idiomas"
+      languagesLabel: "Idiomas",
+      watchedLabel: "Visto",
+      watchedNot: "Pendiente",
+      watchedAll: "Todos",
+      watchedFilter: "Visto / pendiente",
+      watchedInProgress: "En curso",
+      watchedWord: "vistos",
+      watchedAllEpisodes: "todos vistos",
+      titlesSuffixOne: "título",
+      collectionsSuffixOne: "colección",
+      seasonsWordOne: "temporada",
+      episodesWordOne: "episodio",
+      watchedWordOne: "visto",
+      watchedAllEpisodesOne: "visto"
     },
     en: {
       moviesTitle: "Movies",
@@ -219,7 +248,8 @@ var TMM_I18N = (function () {
       clearFilters: "Clear filters",
       emptyMovies: "No movie matches the current filters.",
       emptyShows: "No show matches the current filters.",
-      footer: "Generated with tinyMediaManager · Modern Grid template",
+      footerPre: "Generated with", footerTemplate: "Modern Grid template",
+      creditBy: "by",
       seasonsAbbrev: "S",
       seasonsWord: "seasons",
       synopsisTitle: "Synopsis",
@@ -277,7 +307,20 @@ var TMM_I18N = (function () {
       videoLabel: "Video",
       audioLabel: "Audio",
       sizeLabel: "Size",
-      languagesLabel: "Languages"
+      languagesLabel: "Languages",
+      watchedLabel: "Watched",
+      watchedNot: "Not watched",
+      watchedAll: "All",
+      watchedFilter: "Watched",
+      watchedInProgress: "In progress",
+      watchedWord: "watched",
+      watchedAllEpisodes: "all watched",
+      titlesSuffixOne: "title",
+      collectionsSuffixOne: "collection",
+      seasonsWordOne: "season",
+      episodesWordOne: "episode",
+      watchedWordOne: "watched",
+      watchedAllEpisodesOne: "watched"
     }
   };
 
@@ -301,6 +344,11 @@ var TMM_I18N = (function () {
     return d[key] !== undefined ? d[key] : key;
   }
 
+  // Word for a count: the "<key>One" form when the count is 1 (if the dictionary has it), else <key>.
+  function n(count, key) {
+    return Number(count) === 1 && dict()[key + "One"] !== undefined ? t(key + "One") : t(key);
+  }
+
   function apply() {
     var d = dict();
     var lang = getLang();
@@ -308,6 +356,8 @@ var TMM_I18N = (function () {
 
     Array.prototype.slice.call(document.querySelectorAll("[data-i18n]")).forEach(function (el) {
       var key = el.getAttribute("data-i18n");
+      // data-i18n-count="N" picks the singular form when N is 1
+      if (el.hasAttribute("data-i18n-count")) { el.textContent = n(el.getAttribute("data-i18n-count"), key); return; }
       if (d[key] !== undefined) el.textContent = d[key];
     });
     Array.prototype.slice.call(document.querySelectorAll("[data-i18n-placeholder]")).forEach(function (el) {
@@ -342,7 +392,7 @@ var TMM_I18N = (function () {
   apply();
   wireSwitchers();
 
-  return { t: t, getLang: getLang, setLang: setLang, apply: apply };
+  return { t: t, n: n, getLang: getLang, setLang: setLang, apply: apply };
 })();
 
 /* --------------------------------------------------------------------------
@@ -775,6 +825,67 @@ var TMM_ROUTES = (function () {
 })();
 
 /* --------------------------------------------------------------------------
+   Poster badges. Everything drawn over a poster can be switched off in
+   config.js (badges: { quality: false, ... }); a missing key keeps its default.
+   Hidden badges are hidden with CSS (a class on <html>, "mg-hide-<name>"),
+   so the filters keep working. "watched" is off by default: most libraries
+   do not keep that flag up to date, and a public site would show it to
+   every visitor. When it is on, it also adds the watched marks on detail
+   pages and a "Watched" filter (only if at least one title is watched).
+   The watched data comes from the .jmte files (data-watched), so it needs
+   a re-export; older exports simply show nothing.
+   -------------------------------------------------------------------------- */
+/* Footer: config.js footer = "credit" (default: "... Modern Grid template by Johnnydement",
+   with a link to the project), "plain" (without the author) or "none" (no footer at all).
+   The credit is in the HTML, so it shows even without config.js. */
+(function () {
+  var f = window.TMM_CONFIG && window.TMM_CONFIG.footer;
+  document.documentElement.classList.toggle("mg-footer-plain", f === "plain");
+  document.documentElement.classList.toggle("mg-footer-none", f === "none" || f === false);
+})();
+
+var TMM_BADGES = (function () {
+  "use strict";
+
+  var DEFAULTS = { quality: true, seasons: true, languages: true, versions: true, sharedWarning: true, hover: true, watched: false };
+  var cfg = (window.TMM_CONFIG && window.TMM_CONFIG.badges) || {};
+  var on = {};
+  Object.keys(DEFAULTS).forEach(function (k) {
+    on[k] = cfg[k] === undefined ? DEFAULTS[k] : !!cfg[k];
+    var cls = "mg-hide-" + k.replace(/[A-Z]/g, function (c) { return "-" + c.toLowerCase(); });
+    document.documentElement.classList.toggle(cls, !on[k]);
+  });
+
+  // Watched state of one card: "watched", "partial" (TV shows with some episodes watched) or "".
+  // data-watched-eps holds one character per episode ("1" watched, "0" not), so seen/total come for free.
+  function of(card) {
+    var eps = card.dataset.watchedEps || "";
+    var total = eps.length, seen = (eps.match(/1/g) || []).length;
+    if (card.dataset.watched === "1" || (total && seen === total)) return { state: "watched", seen: seen, total: total };
+    if (seen) return { state: "partial", seen: seen, total: total };
+    return { state: "", seen: 0, total: total };
+  }
+
+  // Best state of a group of versions: if you watched one version, you watched the title
+  function ofGroup(cards) {
+    var best = { state: "", seen: 0, total: 0 };
+    var weight = { watched: 2, partial: 1, "": 0 };
+    cards.forEach(function (c) {
+      var w = of(c);
+      if (weight[w.state] > weight[best.state] || (w.state === best.state && w.seen > best.seen)) best = w;
+    });
+    return best;
+  }
+
+  // Detail pages: watched pills (rendered hidden by the .jmte) become visible
+  if (on.watched) {
+    Array.prototype.slice.call(document.querySelectorAll(".pill-watched")).forEach(function (el) { el.hidden = false; });
+  }
+
+  return { on: function (k) { return !!on[k]; }, of: of, ofGroup: ofGroup };
+})();
+
+/* --------------------------------------------------------------------------
    Versions of the same title. tMM exports each version (Film 1988 / Film 4K,
    "Bola de Dragón" / "Dragon Ball"...) as a separate entry with the SAME
    scraper ID (data-vid). The list shows only one card per title
@@ -911,6 +1022,23 @@ var TMM_VERSIONS = (function () {
       var sub = card.querySelector(".sub");
       if (sub && card.dataset.year) sub.textContent = card.dataset.year;
     }
+    // TV shows: the bottom-left badge of the list template is the number of seasons, not a resolution
+    if (!withMedia) {
+      var sb = link.querySelector(".badge.quality");
+      if (sb) sb.classList.add("seasons");
+    }
+    // Watched state of the whole title, stored on every version for the "Watched" filter
+    var w = TMM_BADGES.ofGroup(g.cards);
+    g.cards.forEach(function (c) { c.dataset.seen = w.state; });
+    if (TMM_BADGES.on("watched") && w.state) {
+      var wb = document.createElement("span");
+      wb.className = "badge watched" + (w.state === "partial" ? " partial" : "");
+      wb.textContent = w.state === "partial" ? w.seen + "/" + w.total : "✓";
+      wb.title = w.state === "partial"
+        ? TMM_I18N.t("watchedInProgress") + ": " + w.seen + "/" + w.total
+        : TMM_I18N.t("watchedLabel");
+      link.appendChild(wb);
+    }
   }
 
   function entryOf(card) {
@@ -982,6 +1110,7 @@ var TMM_VERSIONS = (function () {
   var qualitySelect = document.getElementById("qualitySelect");
   var durationSelect = document.getElementById("durationSelect");
   var versionsToggle = document.getElementById("versionsToggle");
+  var watchedSelect = null; // created by buildWatchedFilter() when it makes sense
   var yearSelect = document.getElementById("yearSelect");
   var langChipsWrap = document.getElementById("langChips");
   var langModeWrap = document.getElementById("langMode");
@@ -1006,6 +1135,7 @@ var TMM_VERSIONS = (function () {
     quality: "",
     duration: "",        // "" | maximum minutes ("40"…"130","160") | "160+" | "unknown"
     multiVersion: false, // only titles with several versions
+    watched: "",         // "" | "1" (watched) | "0" (not watched, or only partly)
     langs: new Set(),    // selected audio languages
     langMode: "or",      // "or" (any, default) | "and" (all at once)
     collection: "",
@@ -1212,6 +1342,7 @@ var TMM_VERSIONS = (function () {
       if (vc) vc.textContent = "(" + multiCount + ")";
       versionsToggle.disabled = multiCount === 0;
     }
+    buildWatchedFilter();
 
     if (collectionSelect) {
       if (collSet.size === 0) {
@@ -1362,6 +1493,12 @@ var TMM_VERSIONS = (function () {
       versionsToggle.classList.add("active");
       openPanel = true;
     }
+    var wantedWatched = params.get("watched");
+    if ((wantedWatched === "1" || wantedWatched === "0") && watchedSelect) {
+      watchedSelect.value = wantedWatched;
+      state.watched = wantedWatched;
+      openPanel = true;
+    }
 
     var wantedLetter = params.get("letter");
     if (wantedLetter && azBar && azBar.querySelector('.az-btn[data-letter="' + wantedLetter.replace(/"/g, "") + '"]')) {
@@ -1481,6 +1618,38 @@ var TMM_VERSIONS = (function () {
     return (attr || "").split("|").map(function (s) { return s.trim(); }).indexOf(wanted) !== -1;
   }
 
+  // ---- "Watched" filter: built here (not in the .jmte) and only when it makes sense: badges.watched
+  // switched on in config.js and at least one title watched (fully or partly) in this export ----
+  function buildWatchedFilter() {
+    if (!TMM_BADGES.on("watched")) return;
+    var any = cards.some(function (c) { return !!c.dataset.seen; });
+    var anchor = versionsToggle ? versionsToggle.closest(".filter-group") : null;
+    if (!any || !anchor) return;
+    var group = document.createElement("div");
+    group.className = "filter-group";
+    group.innerHTML = '<label data-i18n="watchedFilter"></label>' +
+      '<select id="watchedSelect">' +
+      '<option value="" data-i18n="watchedAll"></option>' +
+      '<option value="1" data-i18n="watchedLabel"></option>' +
+      '<option value="0" data-i18n="watchedNot"></option>' +
+      "</select>";
+    Array.prototype.slice.call(group.querySelectorAll("[data-i18n]")).forEach(function (el) {
+      el.textContent = TMM_I18N.t(el.getAttribute("data-i18n"));
+    });
+    anchor.parentNode.insertBefore(group, anchor.nextSibling);
+    watchedSelect = group.querySelector("select");
+    watchedSelect.addEventListener("change", function () {
+      state.watched = watchedSelect.value;
+      applyFilters();
+    });
+  }
+
+  function matchesWatched(card) {
+    if (!state.watched) return true;
+    var full = card.dataset.seen === "watched";
+    return state.watched === "1" ? full : !full;
+  }
+
   // ---- Writes the current filter state to the URL (no reload, no new history entry) ----
   var syncTimer = null;
   function syncUrl() {
@@ -1498,6 +1667,7 @@ var TMM_VERSIONS = (function () {
       if (state.quality) p.set("quality", state.quality);
       if (state.duration) p.set("duration", state.duration);
       if (state.multiVersion) p.set("versions", "1");
+      if (state.watched) p.set("watched", state.watched);
       if (state.collection) p.set("collection", state.collection);
       if (state.letter) p.set("letter", state.letter);
       if (state.person.value) p.set(state.person.kind, state.person.value);
@@ -1538,6 +1708,7 @@ var TMM_VERSIONS = (function () {
       (!state.langs.size || Array.from(state.langs)[state.langMode === "and" ? "every" : "some"](function (l) { return cardLangs(card).indexOf(l) !== -1; })) &&
       (!state.quality || cardQuality(card) === state.quality) &&
       matchesDuration(card) &&
+      matchesWatched(card) &&
       (!state.multiVersion || card.dataset.multi === "1");
   }
 
@@ -1554,7 +1725,15 @@ var TMM_VERSIONS = (function () {
       if (show) visible++;
     });
 
-    if (countEl) countEl.textContent = visible;
+    if (countEl) {
+      countEl.textContent = visible;
+      // "1 title" / "N titles": the suffix next to the number follows the count
+      var suffixEl = countEl.parentNode && countEl.parentNode.querySelector("[data-i18n]");
+      if (suffixEl) {
+        suffixEl.setAttribute("data-i18n-count", visible);
+        suffixEl.textContent = TMM_I18N.n(visible, suffixEl.getAttribute("data-i18n"));
+      }
+    }
     if (emptyState) emptyState.classList.toggle("show", visible === 0);
     syncUrl();
   }
@@ -1646,7 +1825,7 @@ var TMM_VERSIONS = (function () {
 
   if (clearBtn) {
     clearBtn.addEventListener("click", function () {
-      state = { q: "", genres: new Set(), genresExclude: new Set(), genreMode: "and", decade: "", year: "", quality: "", duration: "", multiVersion: false, langs: new Set(), langMode: "or", collection: "", letter: "", person: { kind: "", value: "" } };
+      state = { q: "", genres: new Set(), genresExclude: new Set(), genreMode: "and", decade: "", year: "", quality: "", duration: "", multiVersion: false, watched: "", langs: new Set(), langMode: "or", collection: "", letter: "", person: { kind: "", value: "" } };
       if (searchInput) searchInput.value = "";
       if (decadeSelect) decadeSelect.value = "";
       fillYearOptions();
@@ -1654,6 +1833,7 @@ var TMM_VERSIONS = (function () {
       if (qualitySelect) qualitySelect.value = "";
       if (durationSelect) durationSelect.value = "";
       if (versionsToggle) versionsToggle.classList.remove("active");
+      if (watchedSelect) watchedSelect.value = "";
       paintGenreChips();
       paintLangChips();
       setActiveLetterBtn(null);
@@ -1900,8 +2080,8 @@ var TMM_VERSIONS = (function () {
       meta.className = "version-meta";
       if (kind === "tvshows") {
         var bits = [];
-        if (e.seasons) bits.push(e.seasons + " " + TMM_I18N.t("seasonsWord"));
-        if (e.episodes) bits.push(e.episodes + " " + TMM_I18N.t("episodesWord"));
+        if (e.seasons) bits.push(e.seasons + " " + TMM_I18N.n(e.seasons, "seasonsWord"));
+        if (e.episodes) bits.push(e.episodes + " " + TMM_I18N.n(e.episodes, "episodesWord"));
         if (bits.length) meta.appendChild(document.createTextNode(bits.join(" · ")));
       } else {
         var vids = TMM_MEDIA.videos(e.media);
@@ -2011,6 +2191,24 @@ var TMM_VERSIONS = (function () {
     title.className = "season-title";
     title.dataset.season = s;
     title.dataset.count = String(bySeason[s].length);
+    // badges.watched: a ✓ on each watched episode and "N watched" next to the season
+    if (TMM_BADGES.on("watched")) {
+      var seen = 0;
+      bySeason[s].forEach(function (ep) {
+        if (ep.dataset.watched !== "1") return;
+        seen++;
+        var et = ep.querySelector(".ep-title");
+        if (et) {
+          var mark = document.createElement("span");
+          mark.className = "ep-watched";
+          mark.textContent = " ✓";
+          mark.setAttribute("data-i18n-title", "watchedLabel");
+          mark.title = TMM_I18N.t("watchedLabel");
+          et.appendChild(mark);
+        }
+      });
+      title.dataset.seen = String(seen);
+    }
     title.innerHTML = '<span class="arrow">▾</span> <span class="season-label"></span>' +
       ' <span class="season-count" style="color:var(--text-faint);font-weight:400;"></span>';
     titleEls.push(title);
@@ -2031,7 +2229,9 @@ var TMM_VERSIONS = (function () {
       var s = title.dataset.season;
       var count = title.dataset.count;
       title.querySelector(".season-label").textContent = labelFor(s);
-      title.querySelector(".season-count").textContent = "(" + count + " " + TMM_I18N.t("episodesWord") + ")";
+      var seen = parseInt(title.dataset.seen || "0", 10);
+      title.querySelector(".season-count").textContent = "(" + count + " " + TMM_I18N.n(count, "episodesWord") +
+        (seen ? " · " + (String(seen) === count ? TMM_I18N.n(count, "watchedAllEpisodes") : seen + " " + TMM_I18N.n(seen, "watchedWord")) : "") + ")";
     });
   }
 

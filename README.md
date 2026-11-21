@@ -31,7 +31,9 @@ survived more odd file names than any sane person should have to look at.
 - **One card per title**: several versions of the same film (other edition, other resolution, same TMDb/IMDb ID)
   are grouped into one card with a ×N badge; the detail page lists all versions and links between them.
 - Quality badge (2160p / 1080p / 720p / SD) and **audio-language flags** on every card, read from your
-  media files.
+  media files. Every badge on the poster can be switched off in `config.js` (see [Poster badges](#poster-badges-badges)).
+- Optional **watched marks**: a ✓ on watched titles, "7/24" on TV shows in progress, marks on detail pages and episodes,
+  and a "Watched" filter. Off by default.
 - Detail pages with hero image, synopsis, cast, crew, studios, technical table and
   collapsible seasons on TV shows. Actors, directors and studios are clickable and filter the list.
 - Interface in **Catalan, Spanish and English** (switch in the top-right corner, remembered in the browser; English by default).
@@ -40,7 +42,7 @@ survived more odd file names than any sane person should have to look at.
 
 - Genre with **AND / OR** switch and excluded genres (click once to include, twice to exclude, three times to clear).
 - Decade → year, collection, quality, **audio language** (AND / OR), **duration** ("up to 100 minutes", "over 160",
-  "unknown"), "only titles with several versions".
+  "unknown"), "only titles with several versions", and **watched / not watched** when the watched marks are on.
 - All filter state lives in the **URL** (`?genre=Drama&audio=en&duration=100&sort=year-desc`), so a filtered view can
   be bookmarked, shared, and survives the browser's Back button.
 
@@ -141,6 +143,61 @@ both on.
 You can rename a folder later by editing this one file; nothing has to be exported again. If `config.js` is
 missing, or has no `routes`, the exports are standalone and show no links to each other (the landing page, if you
 use it, falls back to the default folder names).
+
+### Poster badges (`badges`)
+
+Some people like their posters dressed up with resolution, flags and counters; others think a poster is a poster and
+should be left alone. Both camps are welcome. Everything drawn over a poster can be switched off in `config.js`, and a
+missing key keeps its default, so you only write the ones you want to change:
+
+```js
+window.TMM_CONFIG = {
+  badges: {
+    quality: true,        // resolution (2160p, 1080p...)
+    seasons: true,        // number of seasons (TV shows)
+    languages: true,      // audio-language flags
+    versions: true,       // "×N" when a title has several versions
+    sharedWarning: true,  // "⚠" when two tMM entries share one export page
+    hover: true,          // genres shown when the pointer is over the poster
+    watched: false        // "✓" watched, "7/24" for a TV show in progress (off by default)
+  }
+};
+```
+
+Hiding a badge only hides the badge: the filter stays. You can hide the quality badge and still filter by quality,
+for when you want a clean wall of posters but also want to know which ones are in 4K (we have all been there). None of
+this needs a re-export, except the watched marks the first time.
+
+**Watched marks** are off by default, for two good reasons. One: tMM's watched flag is only as honest as you are at
+keeping it up to date (by hand, or synced from Kodi or Trakt); if you never touch it, your whole library proudly
+announces that you have watched nothing. Two: on a public site, every visitor gets to see what you have and have not
+watched, and some of us own films we would rather not explain.
+
+If you are brave, `watched: true` gives you a ✓ on the posters, a "Watched" pill on detail pages, a ✓ on each watched
+episode with a "3 watched" count per season, and a **Watched / Not watched** filter (`?watched=1` / `?watched=0`). The
+filter only turns up if at least one title in the export is watched, so nobody gets a filter with nothing behind it.
+A title counts as watched if any of its versions is, and "Not watched" includes the TV shows you abandoned halfway
+(no judgement, season 4 was rough). The watched data is written by the templates, so you need to **re-export once
+with 0.30.0 or later**; older exports simply show no marks.
+
+### Footer (`footer`)
+
+At the bottom of every page there is a small line: "Generated with tinyMediaManager · Modern Grid template by
+Johnnydement". Each name is a link: tinyMediaManager to its website (credit where it is due: tMM does the heavy
+lifting, I only dress it up), the template to this repository, and my name to [me](https://jo.cat/johnnydement).
+They look like plain text, so they do not shout; they only underline when you hover over them.
+
+If you would rather keep your site clean of other people's names, that is fine too:
+
+```js
+window.TMM_CONFIG = {
+  footer: "plain"   // "credit" (default) | "plain" (no author) | "none" (no footer at all)
+};
+```
+
+No re-export needed. The licence is MIT, so the credit is a favour, not a condition, and I will not come knocking.
+But if you keep it, the next person who sees your site and thinks "I want one of those" will know where to find it.
+That is the whole marketing plan.
 
 ### Languages from the file name (`languageSource`)
 
@@ -285,6 +342,7 @@ List pages understand these query parameters (all optional, combinable):
 | `audio` | Audio language code (repeatable, e.g. `audio=ca&audio=en`); `amode=and` requires all of them |
 | `duration` | `40`, `70`, `90`, `100`, `110`, `120`, `130`, `160` (up to N minutes), `160+`, `unknown` |
 | `versions=1` | Only titles with several versions |
+| `watched` | `1` watched, `0` not watched (only when the watched marks are on) |
 | `collection`, `letter`, `sort` | Collection, initial letter, sort order |
 | `actor`, `director`, `studio` | Filter by person / studio |
 
@@ -338,9 +396,11 @@ to fork it and adapt it to your own library. If it breaks, you now own the piece
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest: **0.28.0** — every code comment is now in English
-(no functional change). Recent versions:
+See [CHANGELOG.md](CHANGELOG.md) for the full history. Latest: **0.30.0** — every poster badge can be switched off in
+`config.js`, optional watched marks with their own filter, a configurable footer credit, and proper singulars
+("1 episode", at last). Recent versions:
 
+- **0.28.0**: every code comment is now in English (no functional change).
 - **0.27.0**: light theme with a sun/moon toggle.
 - **0.26.1**: collection links follow tMM's own folder name (colons, slashes); needs tMM 5.3.5 or later, older ones fall back to the title.
 - **0.26.0**: Basque and Galician flags, links to the other sections on the statistics page.

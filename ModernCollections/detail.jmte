@@ -47,7 +47,7 @@
 		<h2 class="section-title" data-i18n="moviesInCollectionTitle">Películas de la colección</h2>
 		<div class="grid" id="moviesGrid">
 			${foreach movieSet.movies movie}
-			<div class="card" data-title="${movie.titleSortable}" data-name="${movie.title}" data-edition="${if movie.edition}${movie.edition}${end}" data-vid="${if movie.ids.tmdb}tmdb:${movie.ids.tmdb}${else}${if movie.ids.imdb}imdb:${movie.ids.imdb}${end}${end}" data-year="${movie.year}" data-media="${foreach movie.mediaFiles mf}${mf.type}~${mf.videoWidth}x${mf.videoHeight}~${mf.videoCodec}~${mf.hdrFormat}~${mf.filesize}~${foreach mf.audioStreams a}${a.audioChannels}:${a.language},${end}§${end}">
+			<div class="card" data-title="${movie.titleSortable}" data-name="${movie.title}" data-edition="${if movie.edition}${movie.edition}${end}" data-vid="${if movie.ids.tmdb}tmdb:${movie.ids.tmdb}${else}${if movie.ids.imdb}imdb:${movie.ids.imdb}${end}${end}" data-year="${movie.year}" data-watched="${if movie.watched}1${end}" data-media="${foreach movie.mediaFiles mf}${mf.type}~${mf.videoWidth}x${mf.videoHeight}~${mf.videoCodec}~${mf.hdrFormat}~${mf.filesize}~${foreach mf.audioStreams a}${a.audioChannels}:${a.language},${end}§${end}">
 				<a class="poster-link" href="../../movies/movies/${movie;filename(escape=false)}.html" data-route="movies" data-root="../../" data-rest="movies/${movie;filename(escape=false)}.html">
 					<img src="../images/${movie;copyArtwork(type=POSTER, thumb=true, width=350, escape=true, default=../nopicture.png)}" alt="${movie.title}" loading="lazy" onerror="this.onerror=null;this.src='../nopicture.png';"/>
 				</a>
@@ -61,7 +61,7 @@
 	</div>
 </div>
 
-<footer class="site-footer" data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+<footer class="site-footer"><span data-i18n="footerPre">Generado con</span> <a href="https://www.tinymediamanager.org" target="_blank" rel="noopener">tinyMediaManager</a> · <a href="https://github.com/johnnydement/tmm-modern-grid" target="_blank" rel="noopener"><span data-i18n="footerTemplate">plantilla Modern Grid</span></a><span class="mg-credit"> <span data-i18n="creditBy">de</span> <a href="https://jo.cat/johnnydement" target="_blank" rel="noopener">Johnnydement</a></span></footer>
 <script src="../../config.js"></script>
 <script src="../app.js"></script>
 </body>

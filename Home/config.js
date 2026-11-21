@@ -37,6 +37,29 @@
      "zxx" (no linguistic content, silent films) is built in. Note "la" is Latin in ISO: if you use LA for
      Latin American Spanish, declare it as in the example above.
 
+   badges: what is drawn over each poster in the lists (and over the movies of a collection page).
+     true = shown, false = hidden; a missing key keeps its default. Hiding a badge does not remove
+     its filter: you can hide the quality badge and still filter by quality. No re-export needed.
+       quality        resolution (2160p, 1080p...)                         default true
+       seasons        number of seasons (TV shows)                          default true
+       languages      audio-language flags                                  default true
+       versions       "×N" when a title has several versions                default true
+       sharedWarning  "⚠" when two tMM entries share one export page        default true
+       hover          genres shown when the pointer is over the poster      default true
+       watched        "✓" for watched titles, "7/24" for TV shows in progress default false
+                      Also shows the watched marks on detail pages (title and episodes) and adds a
+                      "Watched" filter, but only if at least one title in the export is watched.
+                      Off by default: the flag is only useful if you keep it up to date in tMM (or sync
+                      it from Kodi / Trakt), and on a public site every visitor would see it.
+                      Needs a re-export with 0.30.0 or later (older exports carry no watched data).
+
+   footer: the line at the bottom of every page.
+       "credit"  "Generated with tinyMediaManager · Modern Grid template by Johnnydement", each name
+                 a link (tMM website, this project on GitHub, the author)                    (default)
+       "plain"   the same without the author
+       "none"    no footer at all
+     No re-export needed. Keeping the credit is appreciated, never required (MIT licence).
+
    If this file is missing, the exports are standalone and the landing page uses the default folder names below.
    ========================================================================== */
 window.TMM_CONFIG = {
@@ -52,5 +75,15 @@ window.TMM_CONFIG = {
   // does in the folder name; set "keep" if your collection folders keep the colon.
   colonInCollectionFolders: "replace",  // "replace" | "keep"
   languageSource: "tracks",      // "tracks" | "filename"
-  languageCodes: {}              // see above
+  languageCodes: {},             // see above
+  badges: {                      // see above; these are the defaults
+    quality: true,
+    seasons: true,
+    languages: true,
+    versions: true,
+    sharedWarning: true,
+    hover: true,
+    watched: false
+  },
+  footer: "credit"               // "credit" | "plain" | "none"
 };

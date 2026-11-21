@@ -107,7 +107,9 @@
 			data-collection=""
 			data-actors="${if show.actors}${foreach show.actors actor |}${actor.name}${end}${end}"
 			data-directors="${if show.crew}${foreach show.crew person |}${if person.role="Director"}${person.name}${end}${end}${end}"
-			data-studio="${if show.productionCompany}${show.productionCompany}${end}">
+			data-studio="${if show.productionCompany}${show.productionCompany}${end}"
+			data-watched="${if show.watched}1${end}"
+			data-watched-eps="${foreach show.episodes ep}${if ep.watched}1${else}0${end}${end}">
 			<a class="poster-link" href="${show;filename(escape=false)}/tvshow.html">
 				<img src="images/${show;copyArtwork(type=POSTER, thumb=true, width=350, escape=true, default=nopicture.png)}" alt="${show.title}" loading="lazy" onerror="this.onerror=null;this.src='nopicture.png';"/>
 				${if show.seasonCount}<span class="badge quality">${show.seasonCount}<span class="seasons-abbrev" data-i18n="seasonsAbbrev">T</span></span>${end}
@@ -123,7 +125,7 @@
 	<div class="empty-state" id="emptyState" data-i18n="emptyShows">Ninguna serie coincide con los filtros actuales.</div>
 </main>
 
-<footer class="site-footer" data-i18n="footer">Generado con tinyMediaManager · plantilla Modern Grid</footer>
+<footer class="site-footer"><span data-i18n="footerPre">Generado con</span> <a href="https://www.tinymediamanager.org" target="_blank" rel="noopener">tinyMediaManager</a> · <a href="https://github.com/johnnydement/tmm-modern-grid" target="_blank" rel="noopener"><span data-i18n="footerTemplate">plantilla Modern Grid</span></a><span class="mg-credit"> <span data-i18n="creditBy">de</span> <a href="https://jo.cat/johnnydement" target="_blank" rel="noopener">Johnnydement</a></span></footer>
 
 <script src="../config.js"></script>
 <script src="app.js"></script>
